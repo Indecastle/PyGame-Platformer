@@ -28,7 +28,7 @@ class Platform(pygame.sprite.Sprite):
             code. """
         pygame.sprite.Sprite.__init__(self)
 
-        sprite_sheet = SpriteSheet("tiles_spritesheet.png")
+        sprite_sheet = SpriteSheet("images/tiles_spritesheet.png")
         # Grab the image for this platform
         self.image = sprite_sheet.get_image(sprite_sheet_data[0],
                                             sprite_sheet_data[1],
@@ -52,13 +52,6 @@ class MovingPlatform(Platform):
     player = None
 
     def update(self):
-        """ Move the platform.
-            If the player is in the way, it will shove the player
-            out of the way. This does NOT handle what happens if a
-            platform shoves a player into another object. Make sure
-            moving platforms have clearance to push the player around
-            or add code to handle what happens if they don't. """
-
         # Move left/right
         self.rect.x += self.change_x
 

@@ -1,7 +1,3 @@
-"""
-This module is used to hold the Player class. The Player represents the user-
-controlled sprite on the screen.
-"""
 import pygame
 
 import constants
@@ -10,8 +6,6 @@ from platforms import MovingPlatform
 from spritesheet_functions import SpriteSheet
 
 class Player(pygame.sprite.Sprite):
-    """ This class represents the bar at the bottom that the player
-    controls. """
 
     # -- Attributes
     # Set speed vector of player
@@ -36,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
 
-        sprite_sheet = SpriteSheet("p1_walk.png")
+        sprite_sheet = SpriteSheet("images/p1_walk.png")
         # Load all the right facing images into a list
         image = sprite_sheet.get_image(0, 0, 66, 90)
         self.walking_frames_r.append(image)

@@ -15,7 +15,7 @@ def main():
     # Set the height and width of the screen
     size = [constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
-
+    
     pygame.display.set_caption("My Platformer")
 
     # Create the player

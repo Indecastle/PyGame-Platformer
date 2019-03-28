@@ -105,7 +105,7 @@ class Level_01(Level):
         Level.__init__(self, player)
 
         self.background_fill = (31, 73, 125)
-        self.background = pygame.image.load("background_01.png").convert()
+        self.background = pygame.image.load("images/background_01.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -2500
 
@@ -156,7 +156,7 @@ class Level_02(Level):
         Level.__init__(self, player)
 
         self.background_fill = (75, 172, 198)
-        self.background = pygame.image.load("background_02.png").convert()
+        self.background = pygame.image.load("images/background_02.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -1000
 
