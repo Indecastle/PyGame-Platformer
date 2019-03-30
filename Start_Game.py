@@ -1,6 +1,4 @@
-
-
-import pygame
+import pygame, time
 
 import constants
 import levels
@@ -8,11 +6,12 @@ import menu
 
 from player import Player
 
+
+
 def main():
     """ Main Program """
     pygame.init()
 
-    # Set the height and width of the screen
     size = [constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
     
@@ -22,19 +21,20 @@ def main():
     player = Player()
 
     # Create all the levels
-    level_list = []
-    level_list.append(levels.Level_01(player))
-    level_list.append(levels.Level_02(player))
+    levels.level_list = []
+    levels.level_list.append(levels.Level_01(player))
+    levels.level_list.append(levels.Level_02(player))
 
     # Set the current level
-    current_level_no = 0
-    current_level = level_list[current_level_no]
+    levels.current_level_no = 0
+    levels.current_level = levels.level_list[levels.current_level_no]
 
-    active_sprite_list = pygame.sprite.Group()
-    player.level = current_level
+    player.level = levels.current_level
 
     player.rect.x = 340
-    player.rect.y = constants.SCREEN_HEIGHT - player.rect.height
+    player.rect.y = constants.SCREEN_HEIGHT - player.rect.height - 50
+
+    active_sprite_list = pygame.sprite.Group()
     active_sprite_list.add(player)
 
     done = False
@@ -64,9 +64,9 @@ def main():
                     player.stop()
 
         active_sprite_list.update()
+        levels.current_level.update()
 
-        current_level.update()
-
+        """
         current_position = player.rect.x + current_level.world_shift_x
         if current_position < current_level.level_limit:
             player.rect.x = 120
@@ -74,9 +74,11 @@ def main():
                 current_level_no += 1
                 current_level = level_list[current_level_no]
                 player.level = current_level
+        """
 
-        current_level.draw(screen)
+        levels.current_level.draw(screen)
         active_sprite_list.draw(screen)
+
 
         clock.tick(60)
         pygame.display.flip()
