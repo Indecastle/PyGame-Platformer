@@ -1,11 +1,10 @@
 import pygame, time
 
 import constants
-import levels
+import super_level
+from levels import *
 import menu
-
 from player import Player
-
 
 
 def main():
@@ -21,28 +20,29 @@ def main():
     player = Player()
 
     # Create all the levels
-    levels.level_list = []
-    levels.level_list.append(levels.Level_01(player))
-    levels.level_list.append(levels.Level_02(player))
+    super_level.level_list = []
+    super_level.level_list.append(Level_03(player))
+    super_level.level_list.append(Level_02(player))
+    super_level.level_list.append(Level_01(player))
 
     # Set the current level
-    levels.current_level_no = 0
-    levels.current_level = levels.level_list[levels.current_level_no]
+    super_level.current_level_no = 0
+    super_level.current_level = super_level.level_list[super_level.current_level_no]
 
-    player.level = levels.current_level
+    player.level = super_level.current_level
 
-    player.rect.x = 340
-    player.rect.y = constants.SCREEN_HEIGHT - player.rect.height - 50
+    player.rect.x = super_level.current_level.start_pos[0]
+    player.rect.y = super_level.current_level.start_pos[1]
 
     active_sprite_list = pygame.sprite.Group()
     active_sprite_list.add(player)
 
-    done = False
     MainMenu = menu.Menu01()
     MainMenu.menu(screen)
 
     clock = pygame.time.Clock()
 
+    done = False
     # -------- Main Program Loop -----------
     while not done:
         for event in pygame.event.get(): 
@@ -56,6 +56,8 @@ def main():
                     player.go_right()
                 if event.key == pygame.K_UP:
                     player.jump()
+                if event.key == pygame.K_ESCAPE:
+                    MainMenu.menu(screen)
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT and player.change_x < 0:
@@ -64,7 +66,7 @@ def main():
                     player.stop()
 
         active_sprite_list.update()
-        levels.current_level.update()
+        super_level.current_level.update()
 
         """
         current_position = player.rect.x + current_level.world_shift_x
@@ -76,9 +78,9 @@ def main():
                 player.level = current_level
         """
 
-        levels.current_level.draw(screen)
+        super_level.current_level.draw(screen)
         active_sprite_list.draw(screen)
-
+        super_level.current_level.draw_adv(screen)
 
         clock.tick(60)
         pygame.display.flip()

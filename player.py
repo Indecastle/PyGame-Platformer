@@ -106,10 +106,10 @@ class Player(pygame.sprite.Sprite):
 
         if self.change_y == 0:
             if self.direction == "R":
-                frame = (self.pos_move // 30) % len(self.walking_frames_r)
+                frame = (self.pos_move // 40) % (len(self.walking_frames_r)-2)
                 self.image = self.walking_frames_r[frame]
             else:
-                frame = (self.pos_move // 30) % len(self.walking_frames_l)
+                frame = (self.pos_move // 40) % (len(self.walking_frames_l)-2)
                 self.image = self.walking_frames_l[frame]
         else:
             if self.direction == "R":

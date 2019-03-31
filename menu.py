@@ -21,7 +21,7 @@ class Menu:
 class Menu01(Menu):
     def __init__(self):
         x = constants.SCREEN_WIDTH/2-100
-        self.punkts = [(x, 140, u'Game', (250, 250, 30), (30, 250, 250), 0),
+        self.punkts = [(x+10, 140, u'Game', (250, 250, 30), (30, 250, 250), 0),
                        (x, 240, u'Settings', (250, 250, 30), (30, 250, 250), 1),
                        (x+10, 340, u'Quit', (250, 250, 30), (30, 250, 250), 2)]
 
@@ -46,8 +46,8 @@ class Menu01(Menu):
                 if e.type == pygame.QUIT:
                     sys.exit()
                 if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_ESCAPE:
-                        sys.exit()
+                    #if e.key == pygame.K_ESCAPE:
+                    #    sys.exit()
                     if e.key == pygame.K_UP:
                         if punkt > 0:
                             punkt -= 1
