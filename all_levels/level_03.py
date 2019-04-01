@@ -25,9 +25,14 @@ class Level_03(Level):
         sprite_sheet2.set_colorkey(constants.BLACK)
 
         background = self.background
-        gen_block(background, (0,0), 10, sprite_sheet2, blocks.CLOUD_1)
-        gen_block(background, (400,800), 10, sprite_sheet2, blocks.CLOUD_2)
-        gen_block(background, (600,1600), 10, sprite_sheet2, blocks.CLOUD_2)
+        gen_block(background, (0,1300), 1, sprite_sheet2, blocks.CLOUD_1)
+        gen_block(background, (400,1200), 1, sprite_sheet2, blocks.CLOUD_1)
+        gen_block(background, (600,1300), 1, sprite_sheet2, blocks.CLOUD_2)
+        gen_block(background, (700,1400), 1, sprite_sheet2, blocks.CLOUD_2)
+        gen_block(background, (800,1000), 1, sprite_sheet2, blocks.CLOUD_2)
+        gen_block(background, (1000,1300), 1, sprite_sheet2, blocks.CLOUD_2)
+        gen_block(background, (1600,1600), 1, sprite_sheet2, blocks.CLOUD_2)
+
 
 
         self.background_near = pygame.Surface([3000, 1000]).convert()

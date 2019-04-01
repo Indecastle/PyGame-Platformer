@@ -37,7 +37,7 @@ class Menu01(Menu):
             canClick = False
             mp = pygame.mouse.get_pos()
             for i in self.punkts:
-                if i[0] < mp[0] < i[0]+155 and i[1] < mp[1] < i[1]+50:
+                if i[0] < mp[0] < i[0]+300 and i[1] < mp[1] < i[1]+100:
                     punkt = i[5]
                     canClick = True
             self.render(screen, font_menu, punkt)

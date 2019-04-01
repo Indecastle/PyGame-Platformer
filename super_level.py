@@ -150,7 +150,7 @@ class Level():
     def draw(self, screen):
         screen.fill(self.background_fill)
         if self.background_near is not None:
-            screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3-2000))
+            screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3-1100))
             screen.blit(self.background_near,(self.world_shift_x, self.world_shift_y +self.mega_shift))
         else:
             screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3+self.mega_shift))
