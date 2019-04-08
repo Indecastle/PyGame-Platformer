@@ -71,11 +71,14 @@ class Finish(pygame.sprite.Sprite):
             self.player.level = current_level
             self.player.rect.x = current_level.start_pos[0]
             self.player.rect.y = current_level.start_pos[1]
+            self.player.pos_move = 0
            
 
 
 class Level():
     platform_list = None
+    lateral_list = None
+    all_platforms_list = None
     enemy_list = None
     advance_list = None
 
@@ -92,7 +95,9 @@ class Level():
     start_pos = (0,0)
 
     def __init__(self, player):
+        self.all_platforms_list = pygame.sprite.Group()
         self.platform_list = pygame.sprite.Group()
+        self.lateral_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
         self.advance_list = pygame.sprite.Group()
         self.player = player
@@ -150,14 +155,15 @@ class Level():
     def draw(self, screen):
         screen.fill(self.background_fill)
         if self.background_near is not None:
-            screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3-1100))
-            screen.blit(self.background_near,(self.world_shift_x, self.world_shift_y +self.mega_shift))
+            screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3 - 3000 + constants.SCREEN_HEIGHT))
+            screen.blit(self.background_near,(self.world_shift_x, self.world_shift_y ))
         else:
             screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3+self.mega_shift))
             
         
 
         self.platform_list.draw(screen)
+        self.lateral_list.draw(screen)
         self.enemy_list.draw(screen)
 
 
@@ -173,6 +179,10 @@ class Level():
         for platform in self.platform_list:
             platform.rect.x += shift_x
             platform.rect.y += shift_y
+
+        for lateral in self.lateral_list:
+            lateral.rect.x += shift_x
+            lateral.rect.y += shift_y
 
         for enemy in self.enemy_list:
             enemy.rect.x += shift_x

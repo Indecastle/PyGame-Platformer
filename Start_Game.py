@@ -67,7 +67,7 @@ def main():
 
         active_sprite_list.update()
         super_level.current_level.update()
-
+#gwt
         """
         current_position = player.rect.x + current_level.world_shift_x
         if current_position < current_level.level_limit:

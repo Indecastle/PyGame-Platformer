@@ -1,7 +1,7 @@
 import pygame
 
 import constants
-from platforms import MovingPlatform
+from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
 
 class Player(pygame.sprite.Sprite):
@@ -78,31 +78,39 @@ class Player(pygame.sprite.Sprite):
         self.pos_move += self.change_x
 
         # See if we hit anything
-        block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
         for block in block_hit_list:
-            if self.change_x > 0:
-                self.rect.right = block.rect.left
-            elif self.change_x < 0:
-                # Otherwise if we are moving left, do the opposite.
-                self.rect.left = block.rect.right
+            if isinstance(block, LateralPlatform):
+                block.calconplatform()
+            elif isinstance(block, PlatformOnlyUp):
+                pass
+            else:
+                if self.change_x > 0:
+                    self.rect.right = block.rect.left
+                elif self.change_x < 0:
+                    # Otherwise if we are moving left, do the opposite.
+                    self.rect.left = block.rect.right
 
         # Move up/down
         self.rect.y += self.change_y
 
         # Check and see if we hit anything
-        block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
         for block in block_hit_list:
-
-            if self.change_y > 0:
-                self.rect.bottom = block.rect.top
-            elif self.change_y < 0:
-                self.rect.top = block.rect.bottom
+            if isinstance(block, LateralPlatform) or isinstance(block, PlatformOnlyUp):
+                block.onplatform()
+            else:
+                if self.change_y > 0:
+                    self.rect.bottom = block.rect.top
+                elif self.change_y < 0:
+                    self.rect.top = block.rect.bottom
+                self.change_y = 0
 
             # Stop our vertical movement
-            self.change_y = 0
 
-            if isinstance(block, MovingPlatform):
-                self.rect.x += block.change_x
+
+            #if isinstance(block, MovingPlatform):
+            #    self.rect.x += block.change_x
 
         if self.change_y == 0:
             if self.direction == "R":
@@ -137,18 +145,30 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += 2
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
         self.rect.y -= 2
+        lateral_hit_list = []
+        if self.level.lateral_list:
+            lateral_hit_list = list(filter(lambda block: block.check_inblock(), self.level.lateral_list))
+            platform_hit_list += lateral_hit_list
 
-        if len(platform_hit_list) > 0 or self.rect.bottom >= constants.SCREEN_HEIGHT:
-            self.change_y = -10
+        if platform_hit_list or self.rect.bottom >= constants.SCREEN_HEIGHT:
+            canJump = True
+            lateral = lateral_hit_list
+            if lateral:
+                if not any(lat.check_onplatform() for lat in lateral):
+                    canJump = False
+            if canJump:
+                self.change_y = -10.35
+
+
 
 
     # Player-controlled movement:
     def go_left(self):
-        self.change_x = -6
+        self.change_x = -5
         self.direction = "L"
 
     def go_right(self):
-        self.change_x = 6
+        self.change_x = 5
         self.direction = "R"
 
     def stop(self):

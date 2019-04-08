@@ -43,6 +43,7 @@ class Level_02(Level):
             block.rect.y = platform[2] + self.mega_shift
             block.player = self.player
             self.platform_list.add(block)
+            self.all_platforms_list.add(block)
 
         # Add a custom moving platform
         block = platforms.MovingPlatform(platforms.STONE_PLATFORM_RIGHT)
@@ -54,6 +55,7 @@ class Level_02(Level):
         block.player = self.player
         block.level = self
         self.platform_list.add(block)
+        self.all_platforms_list.add(block)
 
         block = Finish(FINISH_ORANGE)
         block.rect.x = 2000
