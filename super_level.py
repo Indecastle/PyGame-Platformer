@@ -3,6 +3,7 @@ import pygame
 import constants
 import platforms
 from spritesheet_functions import SpriteSheet
+from pymenu import wait
 
 
 
@@ -67,7 +68,8 @@ class Finish(pygame.sprite.Sprite):
         global level_list, current_level, current_level_no
         if current_level_no < len(level_list)-1:
             current_level_no += 1
-            current_level = level_list[current_level_no]
+            wait(False)
+            current_level = level_list[current_level_no](self.player)
             self.player.level = current_level
             self.player.rect.x = current_level.start_pos[0]
             self.player.rect.y = current_level.start_pos[1]
@@ -102,10 +104,14 @@ class Level():
         self.advance_list = pygame.sprite.Group()
         self.player = player
 
+        self.world_shift_x = 0
+        self.world_shift_y = 0
+        self.score = 0
 
     def update(self):
         self.platform_list.update()
         self.enemy_list.update()
+
 
         
 

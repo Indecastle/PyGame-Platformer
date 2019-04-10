@@ -20,3 +20,13 @@ PATH_02 = "images/items_spritesheet.png"
 CLOUD_1  = (0,0, 129,71)
 CLOUD_2  = (0,72, 129,71)
 CLOUD_3  = (0,144, 129,71)
+
+SCORE_ORANGE = (161,241, 36,26)
+SCORE_GREEN = (161,313, 36,26)
+SCORE_BLUE = (161,385, 36,26)
+SCORE_STAR = (526,301, 36,40)
+
+
+PATH_03 = "images/pack/Base pack/HUD/hud_spritesheet.png"
+HEAL_FULL = (0,46*2+2, 53,45)
+HEAL_HALF = (0,0, 53,45)

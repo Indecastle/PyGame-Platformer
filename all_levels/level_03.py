@@ -4,6 +4,7 @@ import blocks
 import platforms
 from spritesheet_functions import SpriteSheet, gen_block
 from super_level import *
+import entities.score as score
 
 
 class Level_03(Level):
@@ -106,6 +107,8 @@ class Level_03(Level):
                   [platforms.STONE_PLATFORM_MIDDLE, 13 * 70, shift - 13 * 70+45],
                   [platforms.STONE_PLATFORM_MIDDLE, 14 * 70, shift - 13 * 70+45],
                   [platforms.STONE_PLATFORM_RIGHT, 15 * 70, shift - 13 * 70+45],
+
+                 # [blocks.SCORE_STAR, 11 * 70, shift - 11 * 70, 'Score']
                   ]
 
 
@@ -132,7 +135,7 @@ class Level_03(Level):
 
         # Add a custom moving platform
         block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE)
-        block.rect.x = 950
+        block.rect.x = 450
         block.rect.y = shift - 9 * 70
         block.timers(180, 140)
         block.prioritet = 'X'
@@ -148,3 +151,29 @@ class Level_03(Level):
         block.rect.y = SH - block.rect.height
         block.player = self.player
         self.advance_list.add(block)
+
+
+
+        scores = [ [blocks.SCORE_STAR, 1*70, shift-7*70],
+                   [blocks.SCORE_STAR, 8*70, shift-10*70],
+                   [blocks.SCORE_STAR, 9*70, shift-10*70],
+                   [blocks.SCORE_STAR, 10*70, shift-10*70],
+                   [blocks.SCORE_STAR, 11*70, shift-10*70],
+                   [blocks.SCORE_STAR, 12*70, shift-10*70],
+                   [blocks.SCORE_STAR, 13*70, shift-10*70],
+                   [blocks.SCORE_STAR, 14*70, shift-10*70]]
+
+        block = score.Score(blocks.SCORE_STAR)
+        block.player = self.player
+        block.level = self
+        block.rect.x = 1 * 70
+        block.rect.y = shift - 8 * 70
+        self.advance_list.add(block)
+
+        for ent in scores:
+            block = score.Score(ent[0])
+            self.advance_list.add(block)
+            block.rect.x = ent[1]
+            block.rect.y = ent[2]
+            block.player = self.player
+            block.level = self

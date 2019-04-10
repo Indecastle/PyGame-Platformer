@@ -1,14 +1,14 @@
 import pygame, sys
 import constants
+from colorsys import hsv_to_rgb
 
 done = False
 
 clock = pygame.time.Clock()
-
+h = 0
 class Menu:
-    def __init__(self):
-        self.punkts = None
-        self.cycle = True
+    punkts = 0
+    cycle = 0
 
     def render(self, screen, font, num_punkt):
         for i in self.punkts:
@@ -26,13 +26,16 @@ class Menu01(Menu):
                        (x+10, 340, u'Quit', (250, 250, 30), (30, 250, 250), 2)]
 
     def menu(self, screen):
+        global h
         self.cycle = True
         font_menu = pygame.font.Font("fonts/Lobster_1.3.otf", 100)
         punkt = 0
         canClick = False
 
         while self.cycle:
-            screen.fill((0, 100, 200))
+            rgb = hsv_to_rgb(h, 1, 1)
+            screen.fill((rgb[0]*255, rgb[1]*255, rgb[2]*255))
+            h = (h + 0.001) % 1.0
 
             canClick = False
             mp = pygame.mouse.get_pos()

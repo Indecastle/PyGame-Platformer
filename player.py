@@ -1,12 +1,22 @@
 import pygame
+import entity
 
 import constants
 from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
 
-class Player(pygame.sprite.Sprite):
+
+class Player(entity.Entity):
     change_x = 0
     change_y = 0
+    speed_jump = -10
+    speed_X = 5
+    speed_sidestar = 2
+    stats = None
+
+    health = 8
+    max_health = 8
+
     pos_move = 0
 
     walking_frames_l = []
@@ -16,7 +26,6 @@ class Player(pygame.sprite.Sprite):
 
     levels = None
     level = None
-
 
     def __init__(self):
         # Call the parent's constructor
@@ -67,7 +76,6 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-
     def update(self):
         """ Move the player. """
         # Gravity
@@ -75,13 +83,12 @@ class Player(pygame.sprite.Sprite):
 
         # Move left/right
         self.rect.x += self.change_x
-        self.pos_move += self.change_x
 
         # See if we hit anything
         block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
         for block in block_hit_list:
             if isinstance(block, LateralPlatform):
-                block.calconplatform()
+                block.calconplatform(self)
             elif isinstance(block, PlatformOnlyUp):
                 pass
             else:
@@ -98,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
         for block in block_hit_list:
             if isinstance(block, LateralPlatform) or isinstance(block, PlatformOnlyUp):
-                block.onplatform()
+                block.onplatform(self)
             else:
                 if self.change_y > 0:
                     self.rect.bottom = block.rect.top
@@ -106,18 +113,14 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = block.rect.bottom
                 self.change_y = 0
 
-            # Stop our vertical movement
-
-
-            #if isinstance(block, MovingPlatform):
-            #    self.rect.x += block.change_x
+        self.pos_move += self.change_x
 
         if self.change_y == 0:
             if self.direction == "R":
-                frame = (self.pos_move // 40) % (len(self.walking_frames_r)-2)
+                frame = (self.pos_move // 40) % (len(self.walking_frames_r) - 2)
                 self.image = self.walking_frames_r[frame]
             else:
-                frame = (self.pos_move // 40) % (len(self.walking_frames_l)-2)
+                frame = (self.pos_move // 40) % (len(self.walking_frames_l) - 2)
                 self.image = self.walking_frames_l[frame]
         else:
             if self.direction == "R":
@@ -125,51 +128,29 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.image = self.walking_frames_l[6]
 
-
     def calc_grav(self):
-        """ Calculate effect of gravity. """
-        if self.change_y == 0:
-            self.change_y = 1
-        else:
-            self.change_y += .35
-
-        # See if we are on the ground.
-        if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
-            self.change_y = 0
-            self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
-
+        super().calc_grav()
 
     def jump(self):
-        """ Called when user hits 'jump' button. """
-
-        self.rect.y += 2
-        platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2
-        lateral_hit_list = []
-        if self.level.lateral_list:
-            lateral_hit_list = list(filter(lambda block: block.check_inblock(), self.level.lateral_list))
-            platform_hit_list += lateral_hit_list
-
-        if platform_hit_list or self.rect.bottom >= constants.SCREEN_HEIGHT:
-            canJump = True
-            lateral = lateral_hit_list
-            if lateral:
-                if not any(lat.check_onplatform() for lat in lateral):
-                    canJump = False
-            if canJump:
-                self.change_y = -10.35
-
-
-
+        super().jump()
 
     # Player-controlled movement:
     def go_left(self):
-        self.change_x = -5
+        self.change_x = -self.speed_X
         self.direction = "L"
 
     def go_right(self):
-        self.change_x = 5
+        self.change_x = self.speed_X
         self.direction = "R"
 
     def stop(self):
         self.change_x = 0
+
+
+    def minus_heal(self):
+        self.health -= 1
+        self.stats.HUD.rend_health()
+        if self.health == 0:
+            pygame.time.set_timer(constants.EVENT_CLOSE, 100)
+
+

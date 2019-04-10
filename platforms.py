@@ -29,17 +29,14 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 class PlatformOnlyUp(Platform):
-    player = None
-
-    def onplatform(self):
-        x_center = self.player.rect.x + self.player.rect.width / 2
+    def onplatform(self, entity):
+        x_center = entity.rect.x + entity.rect.width / 2
         diff = x_center - self.rect.x
-        if self.player.rect.bottom > self.rect.top  and (0 <= diff <= 70):
-            self.player.rect.bottom = self.rect.top
-            self.player.change_y = 0
+        if entity.rect.bottom > self.rect.top  and (0 <= diff <= 70):
+            entity.rect.bottom = self.rect.top
+            entity.change_y = 0
 
 class LateralPlatform(Platform):
-    player = None
     level = None
     inverse = False
     count = 0
@@ -77,46 +74,46 @@ class LateralPlatform(Platform):
         self.rect.x = x
         self.rect.y = y + 70 - self.size
 
-    def check_inblock(self):
-        x_center = self.player.rect.x + self.player.rect.width / 2
-        y_bottom = self.player.rect.bottom
+    def check_inblock(self, entity):
+        x_center = entity.rect.x + entity.rect.width / 2
+        y_bottom = entity.rect.bottom
         if self.rect.left < x_center < self.rect.right  and  self.rect.top < y_bottom < self.rect.bottom:
             return True
         return False
 
-    def check_onplatform(self):
-        if not self.check_inblock():
+    def check_onplatform(self, entity):
+        if not self.check_inblock(entity):
             return False
-        x_center = self.player.rect.x + self.player.rect.width / 2
+        x_center = entity.rect.x + entity.rect.width / 2
         diff = x_center - self.rect.x
         y = self.rect.bottom - ((self.size - diff) if self.inverse else diff)
-        return self.player.rect.bottom >= y and (0 < diff < self.size)
+        return entity.rect.bottom >= y and (0 < diff < self.size)
 
-    def onplatform(self, force = False):
-        x_center = self.player.rect.x + self.player.rect.width / 2
-        x_center2 = x_center - self.player.change_x
+    def onplatform(self, entity, force = False):
+        x_center = entity.rect.x + entity.rect.width / 2
+        x_center2 = x_center - entity.change_x
         diff2 = x_center2 - self.rect.x
         diff = x_center - self.rect.x
         y = self.rect.bottom - ((self.size - diff) if self.inverse else diff)
-        if ((self.player.rect.bottom > y or force) and (0 <= diff <= self.size))  or  (self.player.rect.bottom < y and (self.size <= diff2 <= self.size+self.player.rect.width / 2)):
-            self.player.rect.bottom = y
-            self.player.change_y = 0
+        if ((entity.rect.bottom > y or force) and (0 <= diff <= self.size))  or  (entity.rect.bottom < y and (self.size <= diff2 <= self.size+entity.rect.width / 2)):
+            entity.rect.bottom = y
+            entity.change_y = 0
 
-    def calconplatform(self):
-        self.player.rect.x -= self.player.change_x
-        self.player.rect.y += 1
-        hit = self.check_onplatform()
-        self.player.rect.x += self.player.change_x
-        self.player.rect.y -= 1
-        if hit and self.player.change_y != -10:  # -10 is event of jump
-            if self.player.change_x > 0:
-                self.player.rect.x -= 1
-            elif self.player.change_x < 0:
-                self.player.rect.x -= -1
-            if self.player.change_x == 0:
-                self.onplatform()
+    def calconplatform(self, entity):
+        entity.rect.x -= entity.change_x
+        entity.rect.y += 1
+        hit = self.check_onplatform(entity)
+        entity.rect.x += self.player.change_x
+        entity.rect.y -= 1
+        if hit and entity.change_y != entity.speed_jump:  # -10 is event of jump
+            if entity.change_x > 0:
+                entity.rect.x -= 1
+            elif entity.change_x < 0:
+                entity.rect.x -= -1
+            if entity.change_x == 0:
+                self.onplatform(entity)
             else:
-                self.onplatform(True)
+                self.onplatform(entity, True)
 
 
 
