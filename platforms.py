@@ -103,7 +103,7 @@ class LateralPlatform(Platform):
         entity.rect.x -= entity.change_x
         entity.rect.y += 1
         hit = self.check_onplatform(entity)
-        entity.rect.x += self.player.change_x
+        entity.rect.x += entity.change_x
         entity.rect.y -= 1
         if hit and entity.change_y != entity.speed_jump:  # -10 is event of jump
             if entity.change_x > 0:
@@ -128,32 +128,26 @@ class MovingPlatform(Platform):
     boundary_right = 0
 
     level = None
-    player = None
 
     def update(self):
-
-
-
         # Move up/down
         self.rect.y += self.change_y
 
         if self.change_y > 0:
             self.rect.y -= self.change_y*2
             hit = pygame.sprite.collide_rect(self, self.player)
-            if hit:
-                self.player.rect.bottom = self.rect.top + self.change_y*2
-                self.player.change_y = 0
+            entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
+            for entity in entity_hit_list:
+                entity.rect.bottom = self.rect.top + self.change_y*2
+                entity.change_y = 0
             self.rect.y += self.change_y*2
 
-        hit = pygame.sprite.collide_rect(self, self.player)
-        if hit:
+        entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
+        for entity in entity_hit_list:
             if self.change_y < 0:
-                self.player.rect.bottom = self.rect.top
+                entity.rect.bottom = self.rect.top
             else:
-                self.player.rect.top = self.rect.bottom
-
-        
-
+                entity.rect.top = self.rect.bottom
 
 
         cur_pos = self.rect.y - self.level.world_shift_y
@@ -167,24 +161,21 @@ class MovingPlatform(Platform):
         # Move left/right
         self.rect.x += self.change_x
         self.rect.y -= 1
-        hit = pygame.sprite.collide_rect(self, self.player)
+        entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
         self.rect.y += 1
-        if hit:
-            self.player.rect.x += self.change_x
+        for entity in entity_hit_list:
+            entity.rect.x += self.change_x
 
 class MovingTimerPlatform(Platform):
     change_x = 0
     change_y = 0
 
-    _timer_x = 0
-    _timer_y = 0
-    timer_x = 0
-    timer_y = 0
+    _timer_x = timer_x = 0
+    _timer_y = timer_y = 0
     prioritet = 'X'
     _shift_timer = 0
 
     level = None
-    player = None
 
     def timers(self, timer_x, timer_y):
         self._timer_x = self.timer_x = timer_x
@@ -199,15 +190,15 @@ class MovingTimerPlatform(Platform):
 
         if self.change_y > 0:
             self.rect.y -= self.change_y*2
-            hit = pygame.sprite.collide_rect(self, self.player)
-            if hit:
-                self.player.rect.bottom = self.rect.top + self.change_y*2
-                self.player.change_y = 0
+            entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
+            for entity in entity_hit_list:
+                entity.rect.bottom = self.rect.top + self.change_y*2
+                entity.change_y = 0
             self.rect.y += self.change_y*2
         else:
-            hit = pygame.sprite.collide_rect(self, self.player)
-            if hit:
-                self.player.rect.bottom = self.rect.top
+            entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
+            for entity in entity_hit_list:
+                entity.rect.bottom = self.rect.top
 
         
 
@@ -234,10 +225,10 @@ class MovingTimerPlatform(Platform):
             # Move left/right
             self.rect.x += self.change_x
         self.rect.y -= 1
-        hit = pygame.sprite.collide_rect(self, self.player)
+        entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
         self.rect.y += 1
-        if hit:
-            self.player.rect.x += self.change_x
+        for entity in entity_hit_list:
+            entity.rect.x += self.change_x
         
 
      

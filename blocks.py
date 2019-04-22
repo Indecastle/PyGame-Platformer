@@ -21,12 +21,20 @@ CLOUD_1  = (0,0, 129,71)
 CLOUD_2  = (0,72, 129,71)
 CLOUD_3  = (0,144, 129,71)
 
-SCORE_ORANGE = (161,241, 36,26)
-SCORE_GREEN = (161,313, 36,26)
-SCORE_BLUE = (161,385, 36,26)
-SCORE_STAR = (526,301, 36,40)
+SCORE_ORANGE = (161,241, 36,26, 10)
+SCORE_GREEN = (161,313, 36,26, 20)
+SCORE_BLUE = (161,385, 36,26, 30)
+SCORE_STAR = (523,301, 36,40, 100)
 
 
 PATH_03 = "images/pack/Base pack/HUD/hud_spritesheet.png"
-HEAL_FULL = (0,46*2+2, 53,45)
+HEAL_FULL = (0,47*2, 53,45)
 HEAL_HALF = (0,0, 53,45)
+HEAL_EMPTY = (0,47, 53,45)
+
+
+
+# Bullets
+BULLET_LASER_GREEN = ("E:/projects/OOP/images/pack/Request pack/Tiles/laserGreenHorizontal.png", (0,26, 70,18) )
+BULLET_LASER_PURPLE_DOT = ("E:/projects/OOP/images/pack/Request pack/Tiles/laserPurpleDot.png", (31,29, 10,10) )
+BULLET_LASER_PURPLE = ("E:/projects/OOP/images/pack/Request pack/Tiles/laserPurple.png", (19,29, 34,10) )

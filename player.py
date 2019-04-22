@@ -7,11 +7,6 @@ from spritesheet_functions import SpriteSheet
 
 
 class Player(entity.Entity):
-    change_x = 0
-    change_y = 0
-    speed_jump = -10
-    speed_X = 5
-    speed_sidestar = 2
     stats = None
 
     health = 8
@@ -24,8 +19,7 @@ class Player(entity.Entity):
 
     direction = "R"
 
-    levels = None
-    level = None
+
 
     def __init__(self):
         # Call the parent's constructor
@@ -130,9 +124,15 @@ class Player(entity.Entity):
 
     def calc_grav(self):
         super().calc_grav()
+        # See if we are on the ground.
+        if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
+            self.change_y = 0
+            self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
-        super().jump()
+        if super().jump():
+            #self.minus_heal()
+            pass
 
     # Player-controlled movement:
     def go_left(self):

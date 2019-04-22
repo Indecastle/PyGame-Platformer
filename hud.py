@@ -26,8 +26,8 @@ class Stats:
     def up_death(self):
         self.count_death += 1
 
-    def up_score(self):
-        self.score += 1
+    def up_score(self, cost):
+        self.score += cost
 
 
 class Hud:
@@ -44,6 +44,7 @@ class Hud:
         sprite_sheet = SpriteSheet("images/pack/Base pack/HUD/hud_spritesheet.png")
         self.image_heal1 = sprite_sheet.get_image(blocks.HEAL_FULL[0], blocks.HEAL_FULL[1], blocks.HEAL_FULL[2], blocks.HEAL_FULL[3])
         self.image_heal2 = sprite_sheet.get_image(blocks.HEAL_HALF[0], blocks.HEAL_HALF[1], blocks.HEAL_HALF[2], blocks.HEAL_HALF[3])
+        self.image_heal3 = sprite_sheet.get_image(blocks.HEAL_EMPTY[0], blocks.HEAL_EMPTY[1], blocks.HEAL_EMPTY[2], blocks.HEAL_EMPTY[3])
 
         self.image_health = pygame.Surface([54*(self.player.max_health)//2, 45]).convert()
         self.image_health.set_colorkey(constants.BLACK)
@@ -61,9 +62,9 @@ class Hud:
         if self.player.health % 2 == 1:
             self.image_health.blit(self.image_heal2, (54*i, 0))
             i+=1
-        #for _ in range((self.player.max_health - i)//2):
-        #    self.image_health.blit(self.image_heal2, (54*i, 0))
-        #    i+=1
+        # for _ in range((self.player.max_health - i)//2):
+        #     self.image_health.blit(self.image_heal3, (54*i, 0))
+        #     i+=1
 
     def draw(self):
         self.screen.blit(self.font_menu.render(str(self.stats.score), 1, (255,200,100)), (50, 50))

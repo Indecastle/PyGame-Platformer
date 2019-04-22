@@ -72,7 +72,6 @@ def play():
                         player.go_right()
                     if event.key == pygame.K_UP:
                         player.jump()
-                        player.minus_heal()
                 if event.key == pygame.K_ESCAPE:
                     #MainMenu.menu(screen)
                     play_menu.enable()
@@ -83,7 +82,7 @@ def play():
                 if event.key == pygame.K_RIGHT and player.change_x > 0:
                         player.stop()
 
-        active_sprite_list.update()
+        #active_sprite_list.update()
         super_level.current_level.update()
 #gwt
         super_level.current_level.draw(screen)

@@ -13,10 +13,10 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("My Platformer")
 
 
-ABOUT = ['PygameMenu {0}'.format(pygameMenu.__version__),
-         'Author: {0}'.format(pygameMenu.__author__),
+ABOUT = ['Game: {0}'.format("Platformer v1.0 Beta"),
+         'Author: {0}'.format("Andrey"),
          PYGAMEMENU_TEXT_NEWLINE,
-         'Email: {0}'.format(pygameMenu.__email__)]
+         'Email: {0}'.format(r"andred9991@gmail.com")]
 COLOR_BLUE = (12, 12, 200)
 COLOR_BACKGROUND = [128, 0, 128]
 COLOR_WHITE = (255, 255, 255)
@@ -41,7 +41,7 @@ def add_event():
     play_menu.disable()
     #my_event = pygame.event.Event(EVENT_CLOSE)
     #pygame.event.post(my_event)
-    pygame.time.set_timer(constants.EVENT_CLOSE, 2000)
+    pygame.time.set_timer(constants.EVENT_CLOSE, 1)
 
 play_menu = pygameMenu.Menu(screen,
                              dopause=False,

@@ -12,8 +12,6 @@ class Entity(pygame.sprite.Sprite):
     speed_X = 5
     speed_sidestar = 2
 
-    direction = "R"
-
     levels = None
     level = None
 
@@ -74,10 +72,10 @@ class Entity(pygame.sprite.Sprite):
         else:
             self.change_y += .35
 
-        # See if we are on the ground.
-        if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
-            self.change_y = 0
-            self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
+        # # See if we are on the ground.
+        # if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
+        #     self.change_y = 0
+        #     self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
         """ Called when user hits 'jump' button. """
@@ -98,6 +96,8 @@ class Entity(pygame.sprite.Sprite):
                     canJump = False
             if canJump:
                 self.change_y = self.speed_jump - constants.GRAVITY
+            return canJump
+        return False
 
     # Player-controlled movement:
     def go_left(self):
@@ -108,3 +108,55 @@ class Entity(pygame.sprite.Sprite):
 
     def stop(self):
         self.change_x = 0
+
+
+
+
+
+class Bullet(pygame.sprite.Sprite):
+    change_x = 0
+    change_y = 0
+    level = None
+    player = None
+    time_live = 200
+
+    def __init__(self, data):
+        super().__init__()
+        sprite_sheet = SpriteSheet(data[0])
+        # Grab the image for this platform
+        self.image = sprite_sheet.get_image(data[1][0], data[1][1], data[1][2], data[1][3])
+        #self.image = pygame.transform.scale(self.image, (100,10))
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.x += self.change_x
+        self.rect.y += self.change_y
+
+        if self.time_live > 0:
+            self.time_live -= 1
+        else:
+            self.destruct()
+
+        block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
+        for block in block_hit_list:
+            if isinstance(block, LateralPlatform):
+                if block.check_onplatform(self):
+                    self.destruct()
+            elif isinstance(block, PlatformOnlyUp):
+                self.destruct()
+            else:
+                self.destruct()
+
+        hit = pygame.sprite.collide_rect(self, self.player)
+        if hit:
+            self.hit_player()
+
+    def destruct(self):
+        self.kill()
+
+    def hit_player(self):
+        self.destruct()
+        self.player.minus_heal()
+
+
+

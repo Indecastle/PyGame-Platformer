@@ -5,10 +5,12 @@ import platforms
 from spritesheet_functions import SpriteSheet, gen_block
 from super_level import *
 import entities.score as score
+import entity, enemy
 
 
 class Level_03(Level):
     """ Definition for level 1. """
+    _timer1, timer1 = 100, 30
 
     def __init__(self, player):
 
@@ -135,13 +137,13 @@ class Level_03(Level):
 
         # Add a custom moving platform
         block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE)
-        block.rect.x = 450
+        block.rect.x = 1460
         block.rect.y = shift - 9 * 70
-        block.timers(180, 140)
-        block.prioritet = 'X'
-        block.change_x = 3
-        block.change_y = 4
-        block.player = self.player
+        block.timers(100, 100)
+        block.prioritet = 'Y'
+        #block.change_x = 3
+        block.change_y = 5
+        #block.player = self.player
         block.level = self
         self.platform_list.add(block)
         self.all_platforms_list.add(block)
@@ -157,10 +159,10 @@ class Level_03(Level):
         scores = [ [blocks.SCORE_STAR, 1*70, shift-7*70],
                    [blocks.SCORE_STAR, 8*70, shift-10*70],
                    [blocks.SCORE_STAR, 9*70, shift-10*70],
-                   [blocks.SCORE_STAR, 10*70, shift-10*70],
-                   [blocks.SCORE_STAR, 11*70, shift-10*70],
-                   [blocks.SCORE_STAR, 12*70, shift-10*70],
-                   [blocks.SCORE_STAR, 13*70, shift-10*70],
+                   [blocks.SCORE_BLUE, 10*70, shift-10*70],
+                   [blocks.SCORE_GREEN, 11*70, shift-10*70],
+                   [blocks.SCORE_ORANGE, 12*70, shift-10*70],
+                   [blocks.SCORE_GREEN, 13*70, shift-10*70],
                    [blocks.SCORE_STAR, 14*70, shift-10*70]]
 
         block = score.Score(blocks.SCORE_STAR)
@@ -177,3 +179,31 @@ class Level_03(Level):
             block.rect.y = ent[2]
             block.player = self.player
             block.level = self
+
+        enemy1 = enemy.Enemy()
+        enemy1.rect.x = 1000
+        enemy1.rect.y = shift - 1000
+        enemy1.change_x = 2
+        enemy1.change_y = 0
+        enemy1.level = self
+        self.entity_list.add(enemy1)
+        self.enemy_list.add(enemy1)
+        self.entity_ground_list.add(enemy1)
+
+
+    def update(self):
+        super().update()
+
+        if self._timer1 > 0:
+            self._timer1 -= 1
+        else:
+            self._timer1 = self.timer1
+
+            bullet = entity.Bullet(blocks.BULLET_LASER_PURPLE)
+            bullet.change_x = -10
+            bullet.change_y = 0
+            bullet.rect.x = 1000 + self.world_shift_x
+            bullet.rect.y = SH - 70 * 10 + self.world_shift_y
+            bullet.player = self.player
+            bullet.level = self
+            self.advance_list.add(bullet)

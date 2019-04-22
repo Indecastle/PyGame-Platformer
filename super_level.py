@@ -100,17 +100,27 @@ class Level():
         self.all_platforms_list = pygame.sprite.Group()
         self.platform_list = pygame.sprite.Group()
         self.lateral_list = pygame.sprite.Group()
-        self.enemy_list = pygame.sprite.Group()
         self.advance_list = pygame.sprite.Group()
+
+        self.enemy_list = pygame.sprite.Group()
+        #self.enemy_ground_list = pygame.sprite.Group()
+        self.enemy_fly_list = pygame.sprite.Group()
+        self.entity_list = pygame.sprite.Group()
+        self.entity_ground_list = pygame.sprite.Group()
+
         self.player = player
+        self.entity_list.add(player)
+        self.entity_ground_list.add(player)
 
         self.world_shift_x = 0
         self.world_shift_y = 0
         self.score = 0
 
     def update(self):
+        self.entity_list.update()
         self.platform_list.update()
-        self.enemy_list.update()
+
+
 
 
         
