@@ -6,6 +6,8 @@ from spritesheet_functions import SpriteSheet
 
 
 class Entity(pygame.sprite.Sprite):
+    health = 3
+    max_health = 3
     change_x = 0
     change_y = 0
     speed_jump = -10
@@ -70,7 +72,10 @@ class Entity(pygame.sprite.Sprite):
         if self.change_y == 0:
             self.change_y = 1
         else:
-            self.change_y += .35
+            self.change_y += self.level.gravity
+
+        if  self.rect.top - self.level.world_shift_y >= constants.SCREEN_HEIGHT + 100:
+            self.death()
 
         # # See if we are on the ground.
         # if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
@@ -88,14 +93,14 @@ class Entity(pygame.sprite.Sprite):
             lateral_hit_list = list(filter(lambda block: block.check_inblock(self), self.level.lateral_list))
             platform_hit_list += lateral_hit_list
 
-        if platform_hit_list or self.rect.bottom >= constants.SCREEN_HEIGHT:
+        if platform_hit_list: # or self.rect.bottom >= constants.SCREEN_HEIGHT:
             canJump = True
             lateral = lateral_hit_list
             if lateral:
                 if not any(lat.check_onplatform(self) for lat in lateral):
                     canJump = False
             if canJump:
-                self.change_y = self.speed_jump - constants.GRAVITY
+                self.change_y = self.speed_jump - self.level.gravity
             return canJump
         return False
 
@@ -109,24 +114,33 @@ class Entity(pygame.sprite.Sprite):
     def stop(self):
         self.change_x = 0
 
+    def death(self):
+        self.kill()
 
+    def minus_heal(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.death()
 
 
 
 class Bullet(pygame.sprite.Sprite):
+    damage = 1
     change_x = 0
     change_y = 0
     level = None
     player = None
-    time_live = 200
+    is_enemy = True
+    time_live = 100
 
-    def __init__(self, data):
+    def __init__(self, data, isenemy = True):
         super().__init__()
         sprite_sheet = SpriteSheet(data[0])
         # Grab the image for this platform
         self.image = sprite_sheet.get_image(data[1][0], data[1][1], data[1][2], data[1][3])
         #self.image = pygame.transform.scale(self.image, (100,10))
         self.rect = self.image.get_rect()
+        self.is_enemy = isenemy
 
     def update(self):
         self.rect.x += self.change_x
@@ -147,16 +161,21 @@ class Bullet(pygame.sprite.Sprite):
             else:
                 self.destruct()
 
-        hit = pygame.sprite.collide_rect(self, self.player)
-        if hit:
-            self.hit_player()
+        if self.is_enemy:
+            hit = pygame.sprite.collide_rect(self, self.player)
+            if hit:
+                self.hit_entity(self.player)
+        else:
+            enemy_hit_list = pygame.sprite.spritecollide(self, self.level.enemy_list, False)
+            for entity in enemy_hit_list:
+                self.hit_entity(entity)
 
     def destruct(self):
         self.kill()
 
-    def hit_player(self):
+    def hit_entity(self, entity):
         self.destruct()
-        self.player.minus_heal()
+        entity.minus_heal(self.damage)
 
 
 

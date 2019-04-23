@@ -8,7 +8,7 @@ import entities.score as score
 import entity, enemy
 
 
-class Level_03(Level):
+class Level_04(Level):
     """ Definition for level 1. """
     _timer1, timer1 = 100, 30
 
@@ -148,7 +148,7 @@ class Level_03(Level):
         # Add a custom moving platform
         block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1460,shift-9*70), (0,5),
                                               (100,100), 'Y',self)
-        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1200, shift - 11 * 70), (0, -5),
+        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2200, shift - 11 * 70), (0, -5),
                                               (150, 100), 'X', self, 2)
 
         block = Finish(FINISH_ORANGE)

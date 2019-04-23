@@ -15,7 +15,7 @@ STONE_PLATFORM_RIGHT  = (792, 648, 70, 40)
 class Platform(pygame.sprite.Sprite):
     """ Platform the user can jump on """
 
-    def __init__(self, sprite_sheet_data, path="images/tiles_spritesheet.png"):
+    def __init__(self, sprite_sheet_data, count = 1, path="images/tiles_spritesheet.png"):
         pygame.sprite.Sprite.__init__(self)
 
         sprite_sheet = SpriteSheet(path)
@@ -23,7 +23,7 @@ class Platform(pygame.sprite.Sprite):
         self.image = sprite_sheet.get_image(sprite_sheet_data[0],
                                             sprite_sheet_data[1],
                                             sprite_sheet_data[2],
-                                            sprite_sheet_data[3])
+                                            sprite_sheet_data[3], count)
         self.const_image = self.image
 
         self.rect = self.image.get_rect()
@@ -107,9 +107,9 @@ class LateralPlatform(Platform):
         entity.rect.y -= 1
         if hit and entity.change_y != entity.speed_jump:  # -10 is event of jump
             if entity.change_x > 0:
-                entity.rect.x -= 1
+                entity.rect.x -= entity.speed_X//3
             elif entity.change_x < 0:
-                entity.rect.x -= -1
+                entity.rect.x -= -(entity.speed_X//3)
             if entity.change_x == 0:
                 self.onplatform(entity)
             else:
@@ -177,6 +177,18 @@ class MovingTimerPlatform(Platform):
 
     level = None
 
+    def __init__(self, data, pos, speed, timers, prioritet, level, count=1, path="images/tiles_spritesheet.png"):
+        super().__init__(data, count, path)
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.change_x = speed[0]
+        self.change_y = speed[1]
+        self.timers(*timers)
+        self.prioritet = prioritet
+        self.level = level
+        level.platform_list.add(self)
+        level.all_platforms_list.add(self)
+
     def timers(self, timer_x, timer_y):
         self._timer_x = self.timer_x = timer_x
         self._timer_y = self.timer_y = timer_y
@@ -195,10 +207,13 @@ class MovingTimerPlatform(Platform):
                 entity.rect.bottom = self.rect.top + self.change_y*2
                 entity.change_y = 0
             self.rect.y += self.change_y*2
-        else:
-            entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
-            for entity in entity_hit_list:
+
+        entity_hit_list = pygame.sprite.spritecollide(self, self.level.entity_ground_list, False)
+        for entity in entity_hit_list:
+            if self.change_y < 0:
                 entity.rect.bottom = self.rect.top
+            else:
+                entity.rect.top = self.rect.bottom
 
         
 

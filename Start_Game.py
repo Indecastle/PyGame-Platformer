@@ -3,10 +3,10 @@ import pygame, time, os
 import constants
 import super_level
 from levels import *
-import menu
+from menu import Console
 from player import Player
 import hud
-from pymenu import play_menu, menu, screen
+from pymenu import play_menu, menu, screen, wait, lose
 
 
 
@@ -43,8 +43,9 @@ def play():
     active_sprite_list = pygame.sprite.Group()
     active_sprite_list.add(player)
 
-    #MainMenu = menu.Menu01()
-    #MainMenu.menu(screen)
+    # MainMenu = menu.Menu01()
+    # MainMenu.menu(screen)
+    console = Console(screen, player)
 
     stats = hud.Stats(screen, player, "Markiz")
     player.stats = stats
@@ -53,6 +54,7 @@ def play():
 
     clock = pygame.time.Clock()
 
+
     done = False
     # -------- Main Program Loop -----------
     while not done:
@@ -60,18 +62,26 @@ def play():
         for event in events:
             if event.type == pygame.QUIT: 
                 done = True # Flag that we are done so we exit this loop
+            if event.type == constants.EVENT_LOSE:
+                pygame.time.set_timer(constants.EVENT_LOSE, 0)
+                lose()
+                return
             if event.type == constants.EVENT_CLOSE:
                 pygame.time.set_timer(constants.EVENT_CLOSE, 0)
                 return
 
             if event.type == pygame.KEYDOWN:
-                if play_menu.is_disabled():
+                if event.key == pygame.K_INSERT:
+                    console.enable()
+                if play_menu.is_disabled() and not console.is_enabled:
                     if event.key == pygame.K_LEFT:
                         player.go_left()
                     if event.key == pygame.K_RIGHT:
                         player.go_right()
                     if event.key == pygame.K_UP:
                         player.jump()
+                    if event.key == pygame.K_e:
+                        player.fire()
                 if event.key == pygame.K_ESCAPE:
                     #MainMenu.menu(screen)
                     play_menu.enable()
@@ -91,6 +101,8 @@ def play():
         HUD.draw()
 
         play_menu.mainloop(events)
+        console.update(events)
+        console.draw()
 
         clock.tick(60)
         pygame.display.flip()

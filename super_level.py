@@ -16,7 +16,7 @@ FINISH_GREEN     = (216,432,  216,360,  216,288)
 
 SW = constants.SCREEN_WIDTH
 SH = constants.SCREEN_HEIGHT
-half_SW, half_SH, half2_SH = SW//2, SH//2, SH//3
+half_SW, half_SH, half2_SH, half3_SH = SW//2, SH//2, SH//3, SH//4
 
 
 class Finish(pygame.sprite.Sprite):
@@ -39,6 +39,7 @@ class Finish(pygame.sprite.Sprite):
         self.isNext = False
 
 
+
     def update(self):
         if self.isNext:
             self.animNext()
@@ -54,7 +55,7 @@ class Finish(pygame.sprite.Sprite):
         hit = pygame.sprite.collide_rect(self, self.player)
         if hit:
             self.isNext = True
-            self.timer = 120
+            self.timer = 60
             self.image = self.image_list[2]
 
 
@@ -95,6 +96,8 @@ class Level():
     world_shift_y = 0
     level_limit = -1000
     start_pos = (0,0)
+    gravity = .35
+
 
     def __init__(self, player):
         self.all_platforms_list = pygame.sprite.Group()
@@ -150,20 +153,27 @@ class Level():
                 self.player.rect.x = 0
 
         # shift the world up (real +y)
-        if self.player.rect.y < half2_SH:
-            diff = half2_SH - self.player.rect.y
-            self.player.rect.y = half2_SH
+        if self.player.rect.y < half3_SH:
+            diff = half3_SH - self.player.rect.y
+            self.player.rect.y = half3_SH
             self.shift_world(0, diff)
 
         # shift the world down (real -y)
-        if self.player.rect.y > half_SH:
+        if self.player.rect.y >= half_SH:
             real_pos = self.player.rect.y - self.world_shift_y
-            if real_pos < half_SH:
+            if real_pos <= half_SH:
                 diff = self.player.rect.y - half_SH
                 self.player.rect.y = half_SH
                 self.shift_world(0, -diff)
-            elif real_pos >= SH:
-                self.player.rect.bottom = SH
+
+        # if self.player.rect.y >= half_SH:
+        #     real_pos = self.player.rect.y - self.world_shift_y
+        #     if real_pos <= half_SH:
+        #         diff = self.player.rect.y - half_SH
+        #         self.player.rect.y = half_SH
+        #         self.shift_world(0, -diff)
+        #     elif real_pos >= SH:
+        #         self.player.rect.bottom = SH
 
         self.advance_list.update()
 

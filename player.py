@@ -4,21 +4,22 @@ import entity
 import constants
 from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
+import blocks
 
 
 class Player(entity.Entity):
     stats = None
-
     health = 8
     max_health = 8
-
     pos_move = 0
-
     walking_frames_l = []
     walking_frames_r = []
-
     direction = "R"
 
+    _timer1, timer1 = 100, 5
+    _timer2, timer2 = 50, 50
+    time_god = False
+    cheat_god = False
 
 
     def __init__(self):
@@ -71,6 +72,10 @@ class Player(entity.Entity):
         self.rect = self.image.get_rect()
 
     def update(self):
+
+
+        if self._timer1 > 0:
+            self._timer1 -= 1
         """ Move the player. """
         # Gravity
         self.calc_grav()
@@ -125,9 +130,9 @@ class Player(entity.Entity):
     def calc_grav(self):
         super().calc_grav()
         # See if we are on the ground.
-        if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
-            self.change_y = 0
-            self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
+        # if self.rect.bottom > constants.SCREEN_HEIGHT and self.change_y >= 0:
+        #     self.change_y = 0
+        #     self.rect.bottom = constants.SCREEN_HEIGHT
 
     def jump(self):
         if super().jump():
@@ -147,10 +152,27 @@ class Player(entity.Entity):
         self.change_x = 0
 
 
-    def minus_heal(self):
-        self.health -= 1
+    def minus_heal(self, damage):
+        if self.cheat_god:
+            return
+        self.health -= damage
         self.stats.HUD.rend_health()
         if self.health == 0:
-            pygame.time.set_timer(constants.EVENT_CLOSE, 100)
+            self.death()
 
+    def death(self):
+        pygame.time.set_timer(constants.EVENT_LOSE, 10)
 
+    def fire(self):
+        if self._timer1 == 0:
+            self._timer1 = self.timer1
+
+            bullet = entity.Bullet(blocks.BULLET_LASER_PURPLE_DOT, False)
+            bullet.damage = 1
+            bullet.change_x = 10 if self.direction == 'R' else -10
+            bullet.change_y = 0
+            bullet.rect.x = self.rect.x
+            bullet.rect.y = self.rect.y + self.rect.height/2
+            bullet.player = self
+            bullet.level = self.level
+            self.level.advance_list.add(bullet)

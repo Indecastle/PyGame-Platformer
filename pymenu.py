@@ -130,6 +130,25 @@ def wait(fill=True):
     #     else:
     #         return
 
+def lose(fill=True):
+    if fill:
+        screen.fill(COLOR_BACKGROUND)
+    #pygame.draw.rect(screen, (255, 180, 0), ((constants.SW - 300) / 2, (constants.SH - 200) / 2 - 50, 300,200))
+    font = pygame.font.Font("fonts/Lobster_1.3.otf", 100)
+    f = font.render('You Lose', 1, COLOR_WHITE)
+    screen.blit(f, ((constants.SW - f.get_rect().width) / 2, constants.SH / 2 - 50))
+    pygame.display.flip()
+
+    timer = 100
+    clock = pygame.time.Clock()
+    while True:
+        clock.tick(60)
+        if timer > 0:
+            timer -= 1
+        else:
+            return
+
+
 def func():
     from Start_Game import play
     play_menu.disable()

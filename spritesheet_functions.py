@@ -18,24 +18,23 @@ class SpriteSheet(object):
         self.sprite_sheet.set_colorkey(constants.BLACK)
         self.sprite_sheet = self.sprite_sheet.convert_alpha()
 
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x, y, width, height, count = 1):
 
         # Create a new blank image
-        image = pygame.Surface([width, height]).convert()
+        image = pygame.Surface([width*count, height]).convert()
         # Assuming black works as the transparent color
         image.set_colorkey(constants.BLACK)
         image = image.convert_alpha()
 
         # Copy the sprite from the large sheet onto the smaller image
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        for i in range(count):
+            image.blit(self.sprite_sheet, (width*i, 0), (x, y, width, height))
 
         # Return the image
         return image
 
 
-
-
-def gen_block(background, pos, height, sprite_sheet, block=(0,0, 70, 70)):
-    for i in range(height):
-        background.blit(sprite_sheet, (pos[0], pos[1]-i*70), (block[0], block[1], block[2], block[3]))
+def gen_block(background, pos, height, count, sprite_sheet, block=(0,0, 70, 70)):
+    for j in range(count):
+        for i in range(height):
+            background.blit(sprite_sheet, (pos[0] + block[2]*j, pos[1]-i*block[3]), (block[0], block[1], block[2], block[3]))
