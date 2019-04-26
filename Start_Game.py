@@ -71,7 +71,7 @@ def play():
                 return
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_INSERT:
+                if event.key == pygame.K_BACKQUOTE:
                     console.enable()
                 if play_menu.is_disabled() and not console.is_enabled:
                     if event.key == pygame.K_LEFT:

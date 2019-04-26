@@ -36,6 +36,7 @@ def main_background():
     :return: None
     """
     screen.fill(COLOR_BACKGROUND)
+    pygame.draw.rect(screen, (255,0,0), (constants.SW/4+20,constants.SH/4-20, constants.SW/2-40, constants.SH/2+40),)
 
 def add_event():
     play_menu.disable()
@@ -102,7 +103,7 @@ menu = pygameMenu.Menu(screen,
                        bgfun=main_background,
                        enabled=False,
                        font=pygameMenu.fonts.FONT_NEVIS,
-                       menu_alpha=90,
+                       menu_alpha=0,
                        onclose=PYGAME_MENU_DISABLE_CLOSE,
                        title='Main Menu',
                        title_offsety=5,

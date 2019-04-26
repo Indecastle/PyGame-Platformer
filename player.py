@@ -16,10 +16,13 @@ class Player(entity.Entity):
     walking_frames_r = []
     direction = "R"
 
-    _timer1, timer1 = 100, 5
-    _timer2, timer2 = 50, 50
+    _timer1, timer1 = 100, 5 # fire
+    _timer2, timer2 = 200,200 # time_god
+    _timer3, timer3 = 10,10 # time_god_2
     time_god = False
+    time_god_2 = False
     cheat_god = False
+    temp_image = None
 
 
     def __init__(self):
@@ -68,11 +71,10 @@ class Player(entity.Entity):
         self.walking_frames_l.append(image)
 
         self.image = self.walking_frames_r[0]
-
         self.rect = self.image.get_rect()
 
     def update(self):
-
+        self.time_god_show()
 
         if self._timer1 > 0:
             self._timer1 -= 1
@@ -117,15 +119,19 @@ class Player(entity.Entity):
         if self.change_y == 0:
             if self.direction == "R":
                 frame = (self.pos_move // 40) % (len(self.walking_frames_r) - 2)
-                self.image = self.walking_frames_r[frame]
+                self.temp_image = self.walking_frames_r[frame]
             else:
                 frame = (self.pos_move // 40) % (len(self.walking_frames_l) - 2)
-                self.image = self.walking_frames_l[frame]
+                self.temp_image = self.walking_frames_l[frame]
         else:
             if self.direction == "R":
-                self.image = self.walking_frames_r[6]
+                self.temp_image = self.walking_frames_r[6]
             else:
-                self.image = self.walking_frames_l[6]
+                self.temp_image = self.walking_frames_l[6]
+
+        if self.image != self.temp_image:
+            self.image = self.temp_image.copy()
+        self.rend_alpha()
 
     def calc_grav(self):
         super().calc_grav()
@@ -153,10 +159,11 @@ class Player(entity.Entity):
 
 
     def minus_heal(self, damage):
-        if self.cheat_god:
+        if self.cheat_god or self.time_god:
             return
         self.health -= damage
         self.stats.HUD.rend_health()
+        self.time_god = True
         if self.health == 0:
             self.death()
 
@@ -171,8 +178,31 @@ class Player(entity.Entity):
             bullet.damage = 1
             bullet.change_x = 10 if self.direction == 'R' else -10
             bullet.change_y = 0
-            bullet.rect.x = self.rect.x
+            bullet.rect.x = self.rect.x + (self.rect.width if self.direction=='R' else 0)
             bullet.rect.y = self.rect.y + self.rect.height/2
             bullet.player = self
             bullet.level = self.level
             self.level.advance_list.add(bullet)
+
+    def time_god_show(self):
+        if not self.time_god:
+            return None
+
+        if self._timer2 > 0:
+            self._timer2 -= 1
+        else:
+            self._timer2 = self.timer2
+            self.time_god = False
+
+        if self._timer3 > 0:
+            self._timer3 -= 1
+        else:
+            self._timer3 = self.timer3
+            self.time_god_2 = not self.time_god_2
+
+        if not self.time_god and self.time_god_2:
+            self.time_god_2 = False
+
+    def rend_alpha(self):
+        if self.time_god_2:
+            self.image.fill((255, 255, 255, 100), None, pygame.BLEND_RGBA_MULT)
