@@ -60,7 +60,7 @@ class Level_03(Level):
         gen_block(background_near, (5*70,shift-70), 5, 1, sprite_sheet, blocks.BLOCK_EARTH)
         gen_block(background_near, (6*70,shift-70), 5, 1, sprite_sheet, blocks.BLOCK_EARTH)
         gen_block(background_near, (7*70,shift-70), 6, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (8*70,shift-70), 7, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (8*70,shift-70), 6, 1, sprite_sheet, blocks.BLOCK_EARTH)
         gen_block(background_near, (9*70,shift-70), 8, 1, sprite_sheet, blocks.BLOCK_EARTH)
         #gen_block(background_near, (9*70,shift-8*70), 1, sprite_sheet, blocks.BLOCK_GRASS_LRIGHT2)
         gen_block(background_near, (10*70,shift-70), 8, 3, sprite_sheet, blocks.BLOCK_EARTH)
@@ -85,7 +85,7 @@ class Level_03(Level):
                   [blocks.BLOCK_GRASS_LEFT, 7*70, shift-7*70],
                   [blocks.BLOCK_GRASS_LRIGHT, 8*70, shift-8*70, 'Lateral',  2, False],
                   #[blocks.BLOCK_GRASS_LRIGHT, 9*70, shift-9*70+1,False],
-                  [blocks.BLOCK_GRASS_MIDDLE, 10*70, shift-9*70,  'OnlyUp', 1],
+                  [blocks.BLOCK_GRASS_MIDDLE, 10*70, shift-9*70,  'OnlyUp', (1,1)],
                   [blocks.BLOCK_GRASS_MIDDLE, 11*70, shift-9*70],
                   [blocks.BLOCK_GRASS_MIDDLE, 12*70, shift-9*70],
                   [blocks.BLOCK_GRASS_MIDDLE, 13*70, shift-9*70],
@@ -98,10 +98,10 @@ class Level_03(Level):
 
                   [blocks.BLOCK_GRASS_RIGHT, 23 * 70, shift - 1 * 69],
 
-                  [blocks.BLOCK_GRASS_MIDDLE, 24 * 70, shift - 9*70, 9],
+                  [blocks.BLOCK_GRASS_MIDDLE, 24 * 70, shift - 9*70, (9,1)],
 
                   [platforms.STONE_PLATFORM_LEFT, 34 * 70, shift - 20 * 70],
-                  [platforms.STONE_PLATFORM_MIDDLE, 35 * 70, shift - 20 * 70, 7],
+                  [platforms.STONE_PLATFORM_MIDDLE, 35 * 70, shift - 20 * 70, (7,1)],
                   [platforms.STONE_PLATFORM_RIGHT, 42 * 70, shift - 20 * 70],
 
 
@@ -146,10 +146,12 @@ class Level_03(Level):
 
 
         # Add a custom moving platform
-        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1460,shift-9*70), (0,5),
-                                              (100,100), 'Y',self)
-        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1200, shift - 11 * 70), (0, -5),
-                                              (150, 100), 'X', self, 2)
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1460,shift-9*70), (0,5),
+                                      (100,100), 'Y',self)
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1200, shift - 11 * 70), (0, -5),
+                                      (150, 100), 'X', self, (1,1))
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2100, shift - 11 * 70), (0, -6),
+                                      (150, 100), 'X', self, (2,1))
 
         block = Finish(FINISH_ORANGE)
         block.rect.x = 2900
@@ -160,6 +162,7 @@ class Level_03(Level):
 
 
         scores = [ [blocks.SCORE_STAR, 1*70, shift-7*70],
+                   [blocks.SCORE_STAR, 1*70, shift-8*70],
                    [blocks.SCORE_STAR, 8*70, shift-10*70],
                    [blocks.SCORE_STAR, 9*70, shift-10*70],
                    [blocks.SCORE_BLUE, 10*70, shift-10*70],
@@ -167,13 +170,6 @@ class Level_03(Level):
                    [blocks.SCORE_ORANGE, 12*70, shift-10*70],
                    [blocks.SCORE_GREEN, 13*70, shift-10*70],
                    [blocks.SCORE_STAR, 14*70, shift-10*70]]
-
-        block = score.Score(blocks.SCORE_STAR)
-        block.player = self.player
-        block.level = self
-        block.rect.x = 1 * 70
-        block.rect.y = shift - 8 * 70
-        self.advance_list.add(block)
 
         for ent in scores:
             block = score.Score(ent[0])
@@ -183,28 +179,8 @@ class Level_03(Level):
             block.player = self.player
             block.level = self
 
-        enemy1 = enemy.Enemy()
-        enemy1.rect.x = 1000
-        enemy1.rect.y = shift - 1000
-        enemy1.change_x = 2
-        enemy1.change_y = 0
-        enemy1.level = self
-        enemy1.player = player
-        self.entity_list.add(enemy1)
-        self.enemy_list.add(enemy1)
-        self.entity_ground_list.add(enemy1)
-
-
-        enemy1 = enemy.Enemy2()
-        enemy1.rect.x = 700
-        enemy1.rect.y = shift - 1000
-        enemy1.change_x = 1
-        enemy1.change_y = 0
-        enemy1.level = self
-        enemy1.player = player
-        self.entity_list.add(enemy1)
-        self.enemy_list.add(enemy1)
-        self.entity_ground_list.add(enemy1)
+        enemy.Enemy((1000, shift - 1000), (2,0), self, player)
+        enemy.Enemy2((700,shift - 1000), (1,0), self, player)
 
 
 

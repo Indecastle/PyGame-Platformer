@@ -1,6 +1,7 @@
 import pygame, sys
 import constants
 from colorsys import hsv_to_rgb
+import re
 
 done = False
 
@@ -80,10 +81,10 @@ class Console:
     player = None
     width = 100
     height = 100
-    pos = (0, 0)
+    pos = (3, 3)
     enabled = False
     font = pygame.font.match_font("Arial")
-    maxLength = 18
+    maxLength = 17
     case = 0
     timer = 100
 
@@ -94,9 +95,9 @@ class Console:
         self.text = ""
         self.text2 = ""
         self.is_enabled = False
-        fontFace = pygame.font.match_font("Arial")
+        fontFace = pygame.font.match_font("Consolas")
         self.font = pygame.font.Font(fontFace, 30)
-        self.font2 = pygame.font.Font(fontFace, 40)
+        self.font2 = pygame.font.Font(fontFace, 30)
         self.image = self.font.render(self.text, True, constants.WHITE)
         self.image2 = self.font.render(self.text2, True, constants.WHITE)
         self.is_show_text = False
@@ -144,30 +145,40 @@ class Console:
             width = self.image.get_rect().width
             pygame.draw.rect(self.screen, (200,200,200), (0,0, 300, 33))
             pygame.draw.rect(self.screen, constants.WHITE, (0, 0, 300, 33), 2)
-            self.screen.blit(self.image, (0,0))
+            self.screen.blit(self.image, self.pos)
         if self.is_show_text:
             self.show_text()
 
     def cheat_event(self):
-        text = self.text.rstrip().split(' ')
+        text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
         command = text[0]
+        args = text[1:]
         self.text2 = "None"
         try:
             if command == 'god':
                 self.player.cheat_god = not self.player.cheat_god
                 self.text2 = 'God On' if self.player.cheat_god else 'God Off'
             elif command == 'jump':
-                speed = int(text[1])
+                speed = int(args[0])
                 self.player.speed_jump = -speed
                 self.text2 = f'jump = {speed}'
             elif command == 'speed':
-                speed = int(text[1])
+                speed = int(args[0])
                 self.player.speed_X = speed
                 self.text2 = f'speed = {speed}'
             elif command == 'sv_gravity':
-                value = float(text[1])
+                value = float(args[0])
                 self.player.level.gravity = .35 * value / 800
                 self.text2 = f'sv_gravity = {value}'
+            elif command == 'impulse':
+                if args[0] == '101':
+                    self.player.health = self.player.max_health
+                    self.player.stats.HUD.rend_health()
+                    self.text2 = 'Succesfull'
+            elif command == 'fun':
+                value = float(args[0])
+                self.player.cheat_fun = True if value > 0 else False
+                self.text2 = f'Fun = {"on" if value > 0 else "off"}'
         except ValueError:
             self.text2 = 'Error 404'
         self.image2 = self.font2.render(self.text2, True, constants.WHITE)

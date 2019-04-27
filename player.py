@@ -5,13 +5,16 @@ import constants
 from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
 import blocks
+import enemy
 
 
 class Player(entity.Entity):
     stats = None
     health = 8
     max_health = 8
+    collide_damage = 3
     pos_move = 0
+    speed_X = 5
     walking_frames_l = []
     walking_frames_r = []
     direction = "R"
@@ -21,8 +24,10 @@ class Player(entity.Entity):
     _timer3, timer3 = 10,10 # time_god_2
     time_god = False
     time_god_2 = False
+    temp_image = None  # for alpha impulse
+
     cheat_god = False
-    temp_image = None
+    cheat_fun = False
 
 
     def __init__(self):
@@ -99,6 +104,10 @@ class Player(entity.Entity):
                     # Otherwise if we are moving left, do the opposite.
                     self.rect.left = block.rect.right
 
+        enemy = pygame.sprite.spritecollideany(self, self.level.enemy_list, False)
+        if enemy is not None and not self.time_god:
+            enemy.collide_hit_to(self)
+
         # Move up/down
         self.rect.y += self.change_y
 
@@ -113,6 +122,14 @@ class Player(entity.Entity):
                 elif self.change_y < 0:
                     self.rect.top = block.rect.bottom
                 self.change_y = 0
+
+        enemy = pygame.sprite.spritecollideany(self, self.level.enemy_list, False)
+        if enemy is not None and not self.time_god:
+            if self.change_y > 0:
+                enemy.collide_hit_me(self)
+            else:
+                enemy.collide_hit_to(self)
+
 
         self.pos_move += self.change_x
 
@@ -164,7 +181,7 @@ class Player(entity.Entity):
         self.health -= damage
         self.stats.HUD.rend_health()
         self.time_god = True
-        if self.health == 0:
+        if self.health <= 0:
             self.death()
 
     def death(self):
@@ -206,3 +223,14 @@ class Player(entity.Entity):
     def rend_alpha(self):
         if self.time_god_2:
             self.image.fill((255, 255, 255, 100), None, pygame.BLEND_RGBA_MULT)
+
+
+    def spawn_enemy(self, pos, index):
+        if not self.cheat_fun:
+            return
+        if index == 1:
+            enemy.Enemy(pos, (2, 0), self.level, self)
+        if index == 2:
+            enemy1 = enemy.Enemy2(pos, (2, 0), self.level, self)
+            enemy1.collide_damage = 1
+            enemy1.god = True

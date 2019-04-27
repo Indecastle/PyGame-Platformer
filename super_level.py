@@ -7,6 +7,7 @@ from pymenu import wait
 
 
 
+
 level_list, current_level, current_level_no = None, None, None
 
 FINISH_YELLOW    = (203,0,    202,144,  144,434)
@@ -155,16 +156,22 @@ class Level():
         # shift the world up (real +y)
         if self.player.rect.y < half3_SH:
             diff = half3_SH - self.player.rect.y
-            self.player.rect.y = half3_SH
+            self.player.rect.y = half3_SH # self.player.rect.y += diff
             self.shift_world(0, diff)
 
         # shift the world down (real -y)
         if self.player.rect.y >= half_SH:
             real_pos = self.player.rect.y - self.world_shift_y
-            if real_pos <= half_SH:
+            if real_pos < half_SH:
                 diff = self.player.rect.y - half_SH
-                self.player.rect.y = half_SH
+                self.player.rect.y = half_SH # self.player.rect.y -= diff
                 self.shift_world(0, -diff)
+            elif real_pos > half_SH and self.world_shift_y != 0:
+                diff = self.world_shift_y
+                self.player.rect.y -= diff
+                self.shift_world(0, -diff)
+                print(self.player.rect.x)
+
 
         # if self.player.rect.y >= half_SH:
         #     real_pos = self.player.rect.y - self.world_shift_y
@@ -217,5 +224,4 @@ class Level():
         for object in self.advance_list:
             object.rect.x += shift_x
             object.rect.y += shift_y
-
 

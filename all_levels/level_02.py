@@ -33,12 +33,17 @@ class Level_02(Level):
                   [platforms.STONE_PLATFORM_LEFT, 1120, 280],
                   [platforms.STONE_PLATFORM_MIDDLE, 1190, 280],
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
+
+                  [blocks.BLOCK_GRASS_MIDDLE, 0 * 70, SH - 130, (100, 1)],
                   ]
 
         self.mega_shift = constants.SCREEN_HEIGHT - 600 # only for level_02 (800x600)
 
         for platform in level:
-            block = platforms.Platform(platform[0])
+            if len(platform) == 4:
+                block = platforms.Platform(platform[0], platform[3])
+            else:
+                block = platforms.Platform(platform[0])
             block.rect.x = platform[1]
             block.rect.y = platform[2] + self.mega_shift
             block.player = self.player

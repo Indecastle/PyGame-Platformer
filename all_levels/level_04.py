@@ -52,56 +52,41 @@ class Level_04(Level):
         sprite_sheet.set_colorkey(constants.BLACK)
 
         shift = SH
-        gen_block(background_near, (0,shift-70), 4, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (1*70,shift-70), 4, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (2*70,shift-70), 3, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (3*70,shift-70), 3, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (4*70,shift-70), 4, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (5*70,shift-70), 5, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (0,shift-70), 10, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (1*70,shift-70), 10, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (2*70,shift-70), 9, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (3*70,shift-70), 8, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (4*70,shift-70), 7, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (5*70,shift-70), 6, 1, sprite_sheet, blocks.BLOCK_EARTH)
         gen_block(background_near, (6*70,shift-70), 5, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (7*70,shift-70), 6, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (8*70,shift-70), 7, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        gen_block(background_near, (9*70,shift-70), 8, 1, sprite_sheet, blocks.BLOCK_EARTH)
-        #gen_block(background_near, (9*70,shift-8*70), 1, sprite_sheet, blocks.BLOCK_GRASS_LRIGHT2)
-        gen_block(background_near, (10*70,shift-70), 8, 3, sprite_sheet, blocks.BLOCK_EARTH)
-
-        gen_block(background_near, (12 * 70, shift - 70), 8, 8, sprite_sheet, blocks.BLOCK_EARTH)
-
-        gen_block(background_near, (24 * 70, shift - 70), 8, 9, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (7*70,shift-70), 5, 6, sprite_sheet, blocks.BLOCK_EARTH)
+        gen_block(background_near, (13*70,shift-70), 8, 5, sprite_sheet, blocks.BLOCK_EARTH)
+        # gen_block(background_near, (9*70,shift-70), 6, 1, sprite_sheet, blocks.BLOCK_EARTH)
+        # #gen_block(background_near, (9*70,shift-8*70), 1, sprite_sheet, blocks.BLOCK_GRASS_LRIGHT2)
+        # gen_block(background_near, (10*70,shift-70), 7, 2, sprite_sheet, blocks.BLOCK_EARTH)
+        #
+        # gen_block(background_near, (12 * 70, shift - 70), 8, 8, sprite_sheet, blocks.BLOCK_EARTH)
+        #
+        # gen_block(background_near, (24 * 70, shift - 70), 8, 9, sprite_sheet, blocks.BLOCK_EARTH)
+        #
+        # gen_block(background_near, (25 * 70, shift - 70), 8, 9, sprite_sheet, blocks.BLOCK_EARTH)
 
 
 
         self.level_limit = -1500
-        self.start_pos = (120, SH - player.rect.height - 500)
+        self.start_pos = (120, SH - player.rect.height - 1000)
 
         # Array with type of platform, and x, y location of the platform.
-        level = [ [blocks.BLOCK_GRASS_LEFT, 0*70, shift-5*70],
-                  [blocks.BLOCK_GRASS_RIGHT, 1*70, shift-5*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 2*70, shift-4*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 3*70, shift-4*70],
-                  [blocks.BLOCK_GRASS_LEFT, 4*70, shift-5*70],
-                  [blocks.BLOCK_GRASS_LEFT, 5*70, shift-6*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 6*70, shift-6*70],
-                  [blocks.BLOCK_GRASS_LEFT, 7*70, shift-7*70],
-                  [blocks.BLOCK_GRASS_LRIGHT, 8*70, shift-8*70, 'Lateral',  2, False],
-                  #[blocks.BLOCK_GRASS_LRIGHT, 9*70, shift-9*70+1,False],
-                  [blocks.BLOCK_GRASS_MIDDLE, 10*70, shift-9*70,  'OnlyUp', 1],
-                  [blocks.BLOCK_GRASS_MIDDLE, 11*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 12*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 13*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 14*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 15*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 16*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 17*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_MIDDLE, 18*70, shift-9*70],
-                  [blocks.BLOCK_GRASS_RIGHT, 19*70, shift-9*70],
-
-                  [blocks.BLOCK_GRASS_RIGHT, 23 * 70, shift - 1 * 69],
-
-                  [blocks.BLOCK_GRASS_MIDDLE, 24 * 70, shift - 9*70, 9],
+        level = [ [blocks.BLOCK_GRASS_LEFT, 0*70, shift-11*70],
+                  [blocks.BLOCK_GRASS_MIDDLE, 1*70, shift-11*70,  'OnlyUp', (1,1)],
+                  [blocks.BLOCK_GRASS_LRIGHT, 2*70, shift-11*70, 'Lateral',  5, True],
+                  [blocks.BLOCK_GRASS_MIDDLE, 7 * 70, shift - 6 * 70, (6,1)],
+                  [blocks.BLOCK_EARTH, 13 * 70, shift - 8 * 70, (5, 2)],
+                  [blocks.BLOCK_GRASS_MIDDLE, 13*70, shift-9*70, (5,1)],
+                  [blocks.BLOCK_GRASS_MIDDLE, 20 * 70, shift - 13*70, (5,1)],
 
                   [platforms.STONE_PLATFORM_LEFT, 34 * 70, shift - 20 * 70],
-                  [platforms.STONE_PLATFORM_MIDDLE, 35 * 70, shift - 20 * 70, 7],
+                  [platforms.STONE_PLATFORM_MIDDLE, 35 * 70, shift - 20 * 70, (7,1)],
                   [platforms.STONE_PLATFORM_RIGHT, 42 * 70, shift - 20 * 70],
 
 
@@ -146,10 +131,12 @@ class Level_04(Level):
 
 
         # Add a custom moving platform
-        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1460,shift-9*70), (0,5),
-                                              (100,100), 'Y',self)
-        block = platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2200, shift - 11 * 70), (0, -5),
-                                              (150, 100), 'X', self, 2)
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1250, shift - 11 * 70), (0, -3),
+                                      (100, 50), 'X', self, (1,1))
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (30*70,shift-13*70), (-3,0),
+                                      (100,150), 'Y',self, (1,1))
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2200, shift - 13 * 70+10), (0, -4),
+                                      (150, 100), 'X', self, (1,1))
 
         block = Finish(FINISH_ORANGE)
         block.rect.x = 2900
@@ -160,6 +147,7 @@ class Level_04(Level):
 
 
         scores = [ [blocks.SCORE_STAR, 1*70, shift-7*70],
+                   [blocks.SCORE_STAR, 1*70, shift-8*70],
                    [blocks.SCORE_STAR, 8*70, shift-10*70],
                    [blocks.SCORE_STAR, 9*70, shift-10*70],
                    [blocks.SCORE_BLUE, 10*70, shift-10*70],
@@ -167,13 +155,6 @@ class Level_04(Level):
                    [blocks.SCORE_ORANGE, 12*70, shift-10*70],
                    [blocks.SCORE_GREEN, 13*70, shift-10*70],
                    [blocks.SCORE_STAR, 14*70, shift-10*70]]
-
-        block = score.Score(blocks.SCORE_STAR)
-        block.player = self.player
-        block.level = self
-        block.rect.x = 1 * 70
-        block.rect.y = shift - 8 * 70
-        self.advance_list.add(block)
 
         for ent in scores:
             block = score.Score(ent[0])
@@ -183,28 +164,10 @@ class Level_04(Level):
             block.player = self.player
             block.level = self
 
-        enemy1 = enemy.Enemy()
-        enemy1.rect.x = 1000
-        enemy1.rect.y = shift - 1000
-        enemy1.change_x = 2
-        enemy1.change_y = 0
-        enemy1.level = self
-        enemy1.player = player
-        self.entity_list.add(enemy1)
-        self.enemy_list.add(enemy1)
-        self.entity_ground_list.add(enemy1)
-
-
-        enemy1 = enemy.Enemy2()
-        enemy1.rect.x = 700
-        enemy1.rect.y = shift - 1000
-        enemy1.change_x = 1
-        enemy1.change_y = 0
-        enemy1.level = self
-        enemy1.player = player
-        self.entity_list.add(enemy1)
-        self.enemy_list.add(enemy1)
-        self.entity_ground_list.add(enemy1)
+        enemy.Enemy((1000, shift - 1000), (2,0), self, player)
+        enemy1 = enemy.Enemy2((700,shift - 1000), (1,0), self, player)
+        enemy1.collide_damage = 0
+        enemy1.god = True
 
 
 

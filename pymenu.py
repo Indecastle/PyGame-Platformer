@@ -74,10 +74,32 @@ help_menu = pygameMenu.TextMenu(screen,
                                 window_height=constants.SH,
                                 window_width=constants.SW
                                 )
+
 help_menu.add_option('Return to Menu', PYGAME_MENU_BACK)
 for m in HELP:
     help_menu.add_line(m)
 
+# -----------------------------------------------------------------------------
+# About menu
+settings_menu = pygameMenu.Menu(screen,
+                                bgfun=main_background,
+                                enabled=False,
+                                font=pygameMenu.fonts.FONT_NEVIS,
+                                menu_alpha=100,
+                                onclose=PYGAME_MENU_DISABLE_CLOSE,
+                                title='Settings',
+                                window_height=constants.SH,
+                                window_width=constants.SW
+                                )
+settings_menu.add_selector('Difficulty', [('Easy', 'EASY'),
+                                          ('Medium', 'MEDIUM'),
+                                          ('Hard', 'HARD')],
+                           onreturn=None, onchange=None)
+settings_menu.add_selector('Sound', [('Easy', 'EASY'),
+                                     ('Medium', 'MEDIUM'),
+                                     ('Hard', 'HARD')],
+                           onreturn=None, onchange=None)
+settings_menu.add_option('Return to Menu', PYGAME_MENU_BACK)
 # -----------------------------------------------------------------------------
 # About menu
 about_menu = pygameMenu.TextMenu(screen,
@@ -103,7 +125,7 @@ menu = pygameMenu.Menu(screen,
                        bgfun=main_background,
                        enabled=False,
                        font=pygameMenu.fonts.FONT_NEVIS,
-                       menu_alpha=0,
+                       menu_alpha=90,
                        onclose=PYGAME_MENU_DISABLE_CLOSE,
                        title='Main Menu',
                        title_offsety=5,
@@ -158,6 +180,7 @@ def func():
     play()
 
 menu.add_option(play_menu.get_title(), func)  # Add timer submenu
+menu.add_option(settings_menu.get_title(), settings_menu)  # Add settings submenu
 menu.add_option(help_menu.get_title(), help_menu)  # Add help submenu
 menu.add_option(about_menu.get_title(), about_menu)  # Add about submenu
 menu.add_option('Exit', PYGAME_MENU_EXIT)  # Add exit function

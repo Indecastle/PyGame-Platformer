@@ -3,7 +3,7 @@ import pygame, time, os
 import constants
 import super_level
 from levels import *
-from menu import Console
+from menu import Console, Menu01
 from player import Player
 import hud
 from pymenu import play_menu, menu, screen, wait, lose
@@ -27,6 +27,7 @@ def play():
 
     # Create all the levels
     super_level.level_list = []
+    super_level.level_list.append(Level_04)
     super_level.level_list.append(Level_03)
     super_level.level_list.append(Level_02)
     super_level.level_list.append(Level_01)
@@ -43,7 +44,7 @@ def play():
     active_sprite_list = pygame.sprite.Group()
     active_sprite_list.add(player)
 
-    # MainMenu = menu.Menu01()
+    # MainMenu = Menu01()
     # MainMenu.menu(screen)
     console = Console(screen, player)
 
@@ -85,6 +86,13 @@ def play():
                 if event.key == pygame.K_ESCAPE:
                     #MainMenu.menu(screen)
                     play_menu.enable()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if event.button == 1:
+                    player.spawn_enemy(pos, 1)
+                elif event.button == 3:
+                    player.spawn_enemy(pos, 2)
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT and player.change_x < 0:

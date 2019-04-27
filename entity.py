@@ -11,7 +11,7 @@ class Entity(pygame.sprite.Sprite):
     change_x = 0
     change_y = 0
     speed_jump = -10
-    speed_X = 5
+    speed_X = 0
     speed_sidestar = 2
 
     levels = None
@@ -124,6 +124,7 @@ class Entity(pygame.sprite.Sprite):
 
 
 
+
 class Bullet(pygame.sprite.Sprite):
     damage = 1
     change_x = 0
@@ -166,9 +167,9 @@ class Bullet(pygame.sprite.Sprite):
             if hit:
                 self.hit_entity(self.player)
         else:
-            enemy_hit_list = pygame.sprite.spritecollide(self, self.level.enemy_list, False)
-            for entity in enemy_hit_list:
-                self.hit_entity(entity)
+            enemy = pygame.sprite.spritecollideany(self, self.level.enemy_list, False)
+            if enemy is not None:
+                self.hit_entity(enemy)
 
     def destruct(self):
         self.kill()
