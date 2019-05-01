@@ -159,8 +159,7 @@ class Player(entity.Entity):
 
     def jump(self):
         if super().jump():
-            #self.minus_heal()
-            pass
+            self.stats.count_jump += 1
 
     # Player-controlled movement:
     def go_left(self):
@@ -186,10 +185,12 @@ class Player(entity.Entity):
 
     def death(self):
         pygame.time.set_timer(constants.EVENT_LOSE, 10)
+        self.stats.count_death += 1
 
     def fire(self):
         if self._timer1 == 0:
             self._timer1 = self.timer1
+            self.stats.count_fire += 1
 
             bullet = entity.Bullet(blocks.BULLET_LASER_PURPLE_DOT, False)
             bullet.damage = 1
@@ -224,13 +225,36 @@ class Player(entity.Entity):
         if self.time_god_2:
             self.image.fill((255, 255, 255, 100), None, pygame.BLEND_RGBA_MULT)
 
+    def get_event(self, event):
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.go_left()
+                if event.key == pygame.K_RIGHT:
+                    self.go_right()
+                if event.key == pygame.K_UP:
+                    self.jump()
+                if event.key == pygame.K_e:
+                    self.fire()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            if event.button == 1:
+                self.spawn_enemy(pos, 1)
+            elif event.button == 3:
+                self.spawn_enemy(pos, 2)
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT and self.change_x < 0:
+                    self.stop()
+            if event.key == pygame.K_RIGHT and self.change_x > 0:
+                    self.stop()
 
     def spawn_enemy(self, pos, index):
         if not self.cheat_fun:
             return
         if index == 1:
-            enemy.Enemy(pos, (2, 0), self.level, self)
+            enemy.Enemy(pos, (2, 0), self.level, self, 5, 50)
         if index == 2:
-            enemy1 = enemy.Enemy2(pos, (2, 0), self.level, self)
-            enemy1.collide_damage = 1
-            enemy1.god = True
+            enemy1 = enemy.Enemy2(pos, (2, 0), self.level, self, 1, 10)
+            #enemy1.collide_damage = 1
+            #enemy1.god = True

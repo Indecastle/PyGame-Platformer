@@ -164,8 +164,8 @@ class Level_04(Level):
             block.player = self.player
             block.level = self
 
-        enemy.Enemy((1000, shift - 1000), (2,0), self, player)
-        enemy1 = enemy.Enemy2((700,shift - 1000), (1,0), self, player)
+        enemy1 = enemy.Enemy((1000, shift - 1000), (2,0), self, player, 3, 50)
+        enemy1 = enemy.Enemy2((700,shift - 1000), (1,0), self, player, 3, 20)
         enemy1.collide_damage = 0
         enemy1.god = True
 

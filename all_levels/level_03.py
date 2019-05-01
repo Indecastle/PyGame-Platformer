@@ -179,8 +179,8 @@ class Level_03(Level):
             block.player = self.player
             block.level = self
 
-        enemy.Enemy((1000, shift - 1000), (2,0), self, player)
-        enemy.Enemy2((700,shift - 1000), (1,0), self, player)
+        enemy.Enemy((1000, shift - 1000), (2,0), self, player, 3, 50)
+        enemy.Enemy2((700,shift - 1000), (1,0), self, player, 3, 20)
 
 
 

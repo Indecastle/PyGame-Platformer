@@ -6,10 +6,12 @@ from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
 
 class Base_Enemy(entity.Entity):
+    player = None
     collide_damage = 2
     god = False
     impulse_y = -5
     weapon = None
+    death_score = 0
 
     def collide_hit_me(self, enemy):
         enemy.change_y = self.impulse_y
@@ -29,9 +31,12 @@ class Base_Enemy(entity.Entity):
             return
         super().minus_heal(damage)
 
+    def death(self):
+        self.kill()
+        self.player.stats.up_score(self.death_score)
+
 class Enemy(Base_Enemy):
     stackFSM = None
-    player = None
     health = 3
     max_health = 3
     pos_move = 0
@@ -43,7 +48,7 @@ class Enemy(Base_Enemy):
     _timer1, timer1 = 0, 100
     _timer2, timer2 = 0, 30
 
-    def __init__(self, pos, change, level, player):
+    def __init__(self, pos, change, level, player, health, death_score):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
 
@@ -72,6 +77,8 @@ class Enemy(Base_Enemy):
         self.speed_X = change[0]
         self.level = level
         self.player = player
+        self.max_health = self.health = health
+        self.death_score = death_score
         level.entity_list.add(self)
         level.enemy_list.add(self)
         level.entity_ground_list.add(self)
@@ -149,15 +156,10 @@ class Enemy(Base_Enemy):
         else:
             self.stackFSM.pop()
 
-    def death(self):
-        self.kill()
-        self.player.stats.up_score(50)
-
 
 
 
 class Enemy2(Base_Enemy):
-    player = None
     health = 3
     max_health = 3
     impulse_y = -11
@@ -169,7 +171,7 @@ class Enemy2(Base_Enemy):
     _timer1, timer1 = 100, 100
     _timer2, timer2 = 100, 30
 
-    def __init__(self, pos, change, level, player):
+    def __init__(self, pos, change, level, player, health, death_score):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
 
@@ -192,6 +194,8 @@ class Enemy2(Base_Enemy):
         self.speed_X = change[0]
         self.level = level
         self.player = player
+        self.max_health = self.health = health
+        self.death_score = death_score
         level.entity_list.add(self)
         level.enemy_list.add(self)
         level.entity_ground_list.add(self)
@@ -220,7 +224,3 @@ class Enemy2(Base_Enemy):
             self._timer1 = self.timer1
             self.direction =  'R' if self.direction == 'L' else 'L'
             self.change_x *= -1
-
-    def death(self):
-        self.kill()
-        self.player.stats.up_score(20)

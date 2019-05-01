@@ -2,6 +2,7 @@ import pygame
 import pygameMenu, os
 from pygameMenu.locals import *
 import constants
+import stats
 
 
 
@@ -26,8 +27,18 @@ HELP = ['Press ESC to enable/disable Menu',
         'Press ENTER to access a Sub-Menu or use an option',
         'Press UP/DOWN to move through Menu',
         'Press LEFT/RIGHT to move through Selectors']
-W_SIZE = 800  # Width of window size
+def get_stats():
+    info = [f"NickName: {stats.statistic.name}",
+            #PYGAMEMENU_TEXT_NEWLINE,
+            f"Max_score = {stats.statistic.max_score}",
+            f"Death = {stats.statistic.count_death}",
+            f"Jump = {stats.statistic.count_jump}",
+            f"Fires = {stats.statistic.count_fire}"]
+    return info
 
+
+W_SIZE = 800  # Width of window size
+font = pygame.font.SysFont("nevis", 100)
 
 def main_background():
     """
@@ -36,7 +47,10 @@ def main_background():
     :return: None
     """
     screen.fill(COLOR_BACKGROUND)
-    pygame.draw.rect(screen, (255,0,0), (constants.SW/4+20,constants.SH/4-20, constants.SW/2-40, constants.SH/2+40),)
+    if stats.statistic is not None:
+        rend = font.render("Hello, " + stats.statistic.name, True, (255, 255, 255))
+        screen.blit(rend, rend.get_rect(topleft=(350, 20)))
+    #pygame.draw.rect(screen, (255,0,0), (constants.SW/4+20,constants.SH/4-20, constants.SW/2-40, constants.SH/2+40),)
 
 def add_event():
     play_menu.disable()
@@ -64,20 +78,23 @@ play_menu.add_option('Exit Game', add_event)
 
 # -----------------------------------------------------------------------------
 # Help menu
-help_menu = pygameMenu.TextMenu(screen,
-                                bgfun=main_background,
-                                font=pygameMenu.fonts.FONT_FRANCHISE,
-                                menu_color=(30, 50, 107),  # Background color
-                                menu_color_title=(120, 45, 30),
-                                onclose=PYGAME_MENU_DISABLE_CLOSE,  # Pressing ESC button does nothing
-                                title='Help',
-                                window_height=constants.SH,
-                                window_width=constants.SW
-                                )
+def stats_menu():
+    menu = pygameMenu.TextMenu(screen,
+                                     bgfun=main_background,
+                                     font=pygameMenu.fonts.FONT_NEVIS,
+                                     text_fontsize = 40,
+                                     menu_color=(30, 50, 107),  # Background color
+                                     menu_color_title=(120, 45, 30),
+                                     onclose=PYGAME_MENU_CLOSE,  # Pressing ESC button does nothing
+                                     title='Statistics',
+                                     window_height=constants.SH,
+                                     window_width=constants.SW
+                                     )
 
-help_menu.add_option('Return to Menu', PYGAME_MENU_BACK)
-for m in HELP:
-    help_menu.add_line(m)
+    for m in get_stats():
+        menu.add_line(m)
+    events = pygame.event.get()
+    menu.mainloop(events)
 
 # -----------------------------------------------------------------------------
 # About menu
@@ -130,7 +147,8 @@ menu = pygameMenu.Menu(screen,
                        title='Main Menu',
                        title_offsety=5,
                        window_height=constants.SH,
-                       window_width=constants.SW
+                       window_width=constants.SW,
+                       menu_height = 450
                        )
 
 def wait(fill=True):
@@ -162,6 +180,7 @@ def lose(fill=True):
     screen.blit(f, ((constants.SW - f.get_rect().width) / 2, constants.SH / 2 - 50))
     pygame.display.flip()
 
+
     timer = 100
     clock = pygame.time.Clock()
     while True:
@@ -177,11 +196,21 @@ def func():
     play_menu.disable()
     menu.reset(1)
     wait()
+    pygame.key.set_repeat()
     play()
+    #pygame.key.set_repeat(200, 200)
+
+def func_nick():
+    from menus.nickname_menu import MenuControl
+    app = MenuControl(screen)
+    app.main_loop()
 
 menu.add_option(play_menu.get_title(), func)  # Add timer submenu
+menu.add_option("Change account", func_nick)  # Add settings submenu
 menu.add_option(settings_menu.get_title(), settings_menu)  # Add settings submenu
-menu.add_option(help_menu.get_title(), help_menu)  # Add help submenu
+menu.add_option("Stats menu", stats_menu)  # Add help submenu
 menu.add_option(about_menu.get_title(), about_menu)  # Add about submenu
 menu.add_option('Exit', PYGAME_MENU_EXIT)  # Add exit function
+
+
 

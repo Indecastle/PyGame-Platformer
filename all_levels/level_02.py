@@ -4,6 +4,7 @@ import constants
 import platforms
 from spritesheet_functions import SpriteSheet
 from super_level import *
+import blocks
 
 class Level_02(Level):
     """ Definition for level 2. """

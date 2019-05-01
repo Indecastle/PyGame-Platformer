@@ -3,7 +3,7 @@ import pygame
 import constants
 import platforms
 from spritesheet_functions import SpriteSheet
-from pymenu import wait
+from menus.pymenu import wait
 
 
 
@@ -170,7 +170,7 @@ class Level():
                 diff = self.world_shift_y
                 self.player.rect.y -= diff
                 self.shift_world(0, -diff)
-                print(self.player.rect.x)
+                #print(self.player.rect.x)
 
 
         # if self.player.rect.y >= half_SH:

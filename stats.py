@@ -3,20 +3,30 @@ import constants
 from spritesheet_functions import SpriteSheet
 import blocks
 
-
+from pymongo import MongoClient
+client = MongoClient('mongodb+srv://ezreal:5656265@firstcluster-xduia.mongodb.net/test?retryWrites=true')
+db = client.get_database('platformer')
+users = db.users
+statistic = None
 
 class Stats:
     screen = None
     HUD = None
     player = None
+    name = None
+    password = None
     count_jump = 0
     count_death = 0
+    count_fire = 0
     score = 0
+    max_score = 0
     level = None
 
-    def __init__(self, screen, player, nickname):
+    def __init__(self, screen, nickname, password):
         self.screen = screen
-        self.player = player
+        # self.player = player
+        self.name = nickname
+        self.password = password
         self.count_jump = 0
         self.count_death = 0
 
@@ -28,7 +38,21 @@ class Stats:
 
     def up_score(self, cost):
         self.score += cost
+        if self.score > self.max_score:
+            self.max_score = self.score
 
+    def get_dict(self) -> dict:
+        stats ={'count_death': self.count_death,
+                'count_fire': self.count_fire,
+                'count_jump': self.count_jump,
+                'max_score': self.max_score}
+        return stats
+
+    def save_data(self):
+        stats = self.get_dict()
+        myquery = {"name": self.name}
+        newvalues = {"$set": {"stats": stats}}
+        users.update_one(myquery, newvalues)
 
 class Hud:
     screen = None

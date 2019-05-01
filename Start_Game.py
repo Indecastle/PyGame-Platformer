@@ -3,16 +3,17 @@ import pygame, time, os
 import constants
 import super_level
 from levels import *
-from menu import Console, Menu01
+from menus.menu import Console, Menu01
 from player import Player
-import hud
-from pymenu import play_menu, menu, screen, wait, lose
+import stats
+from menus.pymenu import play_menu, menu, screen, wait, lose, func_nick
 
 
 
 
 
 def main():
+    func_nick()
     menu.enable()
     events = pygame.event.get()
     menu.mainloop(events)
@@ -48,10 +49,11 @@ def play():
     # MainMenu.menu(screen)
     console = Console(screen, player)
 
-    stats = hud.Stats(screen, player, "Markiz")
-    player.stats = stats
-    HUD = hud.Hud(screen, player, stats)
-    stats.HUD = HUD
+    statistic = stats.statistic
+    player.stats = statistic
+    HUD = stats.Hud(screen, player, statistic)
+    statistic.HUD = HUD
+    statistic.score = 0
 
     clock = pygame.time.Clock()
 
@@ -61,44 +63,38 @@ def play():
     while not done:
         events = pygame.event.get()
         for event in events:
-            if event.type == pygame.QUIT: 
+            player_event = False
+            if event.type == pygame.QUIT:
                 done = True # Flag that we are done so we exit this loop
             if event.type == constants.EVENT_LOSE:
                 pygame.time.set_timer(constants.EVENT_LOSE, 0)
+                statistic.save_data()
                 lose()
                 return
             if event.type == constants.EVENT_CLOSE:
                 pygame.time.set_timer(constants.EVENT_CLOSE, 0)
+                statistic.save_data()
                 return
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKQUOTE:
                     console.enable()
                 if play_menu.is_disabled() and not console.is_enabled:
-                    if event.key == pygame.K_LEFT:
-                        player.go_left()
-                    if event.key == pygame.K_RIGHT:
-                        player.go_right()
-                    if event.key == pygame.K_UP:
-                        player.jump()
-                    if event.key == pygame.K_e:
-                        player.fire()
+                    player_event = True
                 if event.key == pygame.K_ESCAPE:
                     #MainMenu.menu(screen)
                     play_menu.enable()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                if event.button == 1:
-                    player.spawn_enemy(pos, 1)
-                elif event.button == 3:
-                    player.spawn_enemy(pos, 2)
+                player_event = True
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT and player.change_x < 0:
-                        player.stop()
-                if event.key == pygame.K_RIGHT and player.change_x > 0:
-                        player.stop()
+                player_event = True
+
+            if player_event:
+                player.get_event(event)
+
+
 
         #active_sprite_list.update()
         super_level.current_level.update()

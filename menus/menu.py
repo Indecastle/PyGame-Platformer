@@ -179,7 +179,7 @@ class Console:
                 value = float(args[0])
                 self.player.cheat_fun = True if value > 0 else False
                 self.text2 = f'Fun = {"on" if value > 0 else "off"}'
-        except ValueError:
+        except (ValueError, IndexError):
             self.text2 = 'Error 404'
         self.image2 = self.font2.render(self.text2, True, constants.WHITE)
         self.is_show_text = True
