@@ -7,6 +7,7 @@ from pymongo import MongoClient
 client = MongoClient('mongodb+srv://ezreal:5656265@firstcluster-xduia.mongodb.net/test?retryWrites=true')
 db = client.get_database('platformer')
 users = db.users
+super_users = db.super_users
 statistic = None
 
 class Stats:

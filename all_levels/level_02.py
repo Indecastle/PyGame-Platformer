@@ -35,6 +35,14 @@ class Level_02(Level):
                   [platforms.STONE_PLATFORM_MIDDLE, 1190, 280],
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
 
+                  [platforms.STONE_PLATFORM_LEFT, 1120, 400],
+                  [platforms.STONE_PLATFORM_MIDDLE, 1190, 400],
+                  [platforms.STONE_PLATFORM_RIGHT, 1260, 400],
+
+                  [platforms.STONE_PLATFORM_LEFT, 1120, 280],
+                  [platforms.STONE_PLATFORM_MIDDLE, 1190, 280],
+                  [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
+
                   [blocks.BLOCK_GRASS_MIDDLE, 0 * 70, SH - 130, (100, 1)],
                   ]
 

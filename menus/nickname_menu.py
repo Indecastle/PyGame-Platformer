@@ -2,7 +2,7 @@ import sys, os, pprint
 import pygame as pg
 import constants
 from boxes import TextBox, ButtonBox
-import stats
+import stats, menus.menu
 KEY_REPEAT_SETTING = (200,70)
 
 class MenuControl(object):
@@ -98,6 +98,9 @@ class MenuControl(object):
             self.message("OK")
             pprint.pprint(info)
             self.back()
+            check = stats.super_users.find_one({'name': name})
+            pprint.pprint(check)
+            menus.menu.sv_cheats = (False if check is None else True)
         else:
             self.message("invalid")
 

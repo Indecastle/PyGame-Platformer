@@ -151,7 +151,6 @@ class Bullet(pygame.sprite.Sprite):
             self.time_live -= 1
         else:
             self.destruct()
-
         block_hit_list = pygame.sprite.spritecollide(self, self.level.all_platforms_list, False)
         for block in block_hit_list:
             if isinstance(block, LateralPlatform):

@@ -4,6 +4,7 @@ from colorsys import hsv_to_rgb
 import re
 
 done = False
+sv_cheats = False
 
 clock = pygame.time.Clock()
 h = 0
@@ -150,37 +151,40 @@ class Console:
             self.show_text()
 
     def cheat_event(self):
-        text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
-        command = text[0]
-        args = text[1:]
-        self.text2 = "None"
-        try:
-            if command == 'god':
-                self.player.cheat_god = not self.player.cheat_god
-                self.text2 = 'God On' if self.player.cheat_god else 'God Off'
-            elif command == 'jump':
-                speed = int(args[0])
-                self.player.speed_jump = -speed
-                self.text2 = f'jump = {speed}'
-            elif command == 'speed':
-                speed = int(args[0])
-                self.player.speed_X = speed
-                self.text2 = f'speed = {speed}'
-            elif command == 'sv_gravity':
-                value = float(args[0])
-                self.player.level.gravity = .35 * value / 800
-                self.text2 = f'sv_gravity = {value}'
-            elif command == 'impulse':
-                if args[0] == '101':
-                    self.player.health = self.player.max_health
-                    self.player.stats.HUD.rend_health()
-                    self.text2 = 'Succesfull'
-            elif command == 'fun':
-                value = float(args[0])
-                self.player.cheat_fun = True if value > 0 else False
-                self.text2 = f'Fun = {"on" if value > 0 else "off"}'
-        except (ValueError, IndexError):
-            self.text2 = 'Error 404'
+        if sv_cheats:
+            text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
+            command = text[0]
+            args = text[1:]
+            self.text2 = "None"
+            try:
+                if command == 'god':
+                    self.player.cheat_god = not self.player.cheat_god
+                    self.text2 = 'God On' if self.player.cheat_god else 'God Off'
+                elif command == 'jump':
+                    speed = int(args[0])
+                    self.player.speed_jump = -speed
+                    self.text2 = f'jump = {speed}'
+                elif command == 'speed':
+                    speed = int(args[0])
+                    self.player.speed_X = speed
+                    self.text2 = f'speed = {speed}'
+                elif command == 'sv_gravity':
+                    value = float(args[0])
+                    self.player.level.gravity = .35 * value / 800
+                    self.text2 = f'sv_gravity = {value}'
+                elif command == 'impulse':
+                    if args[0] == '101':
+                        self.player.health = self.player.max_health
+                        self.player.stats.HUD.rend_health()
+                        self.text2 = 'Succesfull'
+                elif command == 'fun':
+                    value = float(args[0])
+                    self.player.cheat_fun = True if value > 0 else False
+                    self.text2 = f'Fun = {"on" if value > 0 else "off"}'
+            except (ValueError, IndexError):
+                self.text2 = 'Error 404'
+        else:
+            self.text2 = 'No access'
         self.image2 = self.font2.render(self.text2, True, constants.WHITE)
         self.is_show_text = True
         self._timer = self.timer
