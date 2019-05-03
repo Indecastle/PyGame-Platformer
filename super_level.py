@@ -76,6 +76,11 @@ class Finish(pygame.sprite.Sprite):
             self.player.rect.x = current_level.start_pos[0]
             self.player.rect.y = current_level.start_pos[1]
             self.player.pos_move = 0
+            if self.player.health % 2 == 1:
+                self.player.health += 1
+                #self.player.stats.HUD.rend_health()
+        else:
+            pygame.time.set_timer(constants.EVENT_END, 1)
            
 
 

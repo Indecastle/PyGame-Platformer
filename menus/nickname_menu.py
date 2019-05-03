@@ -21,7 +21,7 @@ class MenuControl(object):
         self.prompts = self.make_prompts()
         self.boxes = [screen_color, text_color, button_login, button_register, button_close]
         self.color = (100,100,100)
-        pg.key.set_repeat(*KEY_REPEAT_SETTING)
+
 
     def make_prompts(self, color="white"):
         color = pg.Color(color)
@@ -29,10 +29,10 @@ class MenuControl(object):
         font = pg.font.SysFont("arial", 30)
         message = 'Nickname:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topleft=(70,100))))
+        rendered.append((rend, rend.get_rect(topright=(190,105))))
         message = 'Password:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topleft=(70,150))))
+        rendered.append((rend, rend.get_rect(topright=(190,155))))
         return rendered
 
     def event_loop(self):
@@ -64,7 +64,7 @@ class MenuControl(object):
                     self.current = (box.id + 1) % len(self.boxes)
                     self.boxes[self.current].active = True
             if all(not box.active for box in self.boxes):
-                self.current = 4
+                self.current = len(self.boxes)-1
 
     def render(self):
         self.screen.fill(self.color)
@@ -74,6 +74,7 @@ class MenuControl(object):
             self.screen.blit(*prompt)
 
     def main_loop(self):
+        pg.key.set_repeat(*KEY_REPEAT_SETTING)
         while not self.done:
             self.event_loop()
             for box in self.boxes:
@@ -81,6 +82,7 @@ class MenuControl(object):
             self.render()
             pg.display.update()
             self.clock.tick(self.fps)
+        pg.key.set_repeat()
 
     def event_login(self):
         name = self.boxes[0].final.strip()

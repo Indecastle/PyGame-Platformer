@@ -35,6 +35,7 @@ class Base_Enemy(entity.Entity):
         self.kill()
         self.player.stats.up_score(self.death_score)
 
+
 class Enemy(Base_Enemy):
     stackFSM = None
     health = 3

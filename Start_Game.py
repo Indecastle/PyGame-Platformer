@@ -6,7 +6,7 @@ from levels import *
 from menus.menu import Console, Menu01
 from player import Player
 import stats
-from menus.pymenu import play_menu, menu, screen, wait, lose, func_nick
+from menus.pymenu import play_menu, menu, screen, wait, lose, func_nick, end_game
 
 
 
@@ -75,6 +75,11 @@ def play():
                 pygame.time.set_timer(constants.EVENT_CLOSE, 0)
                 statistic.save_data()
                 return
+            if event.type == constants.EVENT_END:
+                pygame.time.set_timer(constants.EVENT_END, 0)
+                statistic.save_data()
+                end_game(player)
+                return
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKQUOTE:
@@ -100,7 +105,7 @@ def play():
         super_level.current_level.update()
 #gwt
         super_level.current_level.draw(screen)
-        active_sprite_list.draw(screen)
+        player.draw(screen)
         super_level.current_level.draw_adv(screen)
         HUD.draw()
 

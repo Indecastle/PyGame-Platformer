@@ -1,7 +1,7 @@
 import pygame
 import pygameMenu, os
 from pygameMenu.locals import *
-import constants
+import constants, settings
 import stats
 
 
@@ -23,10 +23,14 @@ COLOR_BACKGROUND = [128, 0, 128]
 COLOR_WHITE = (255, 255, 255)
 FPS = 60
 H_SIZE = 600  # Height of window size
+W_SIZE = 800  # Width of window size
 HELP = ['Press ESC to enable/disable Menu',
         'Press ENTER to access a Sub-Menu or use an option',
         'Press UP/DOWN to move through Menu',
         'Press LEFT/RIGHT to move through Selectors']
+font = pygame.font.SysFont("nevis", 100)
+
+
 def get_stats():
     info = [f"NickName: {stats.statistic.name}",
             #PYGAMEMENU_TEXT_NEWLINE,
@@ -37,8 +41,9 @@ def get_stats():
     return info
 
 
-W_SIZE = 800  # Width of window size
-font = pygame.font.SysFont("nevis", 100)
+def change_difficulty(d):
+    settings.difficulty = d
+
 
 def main_background():
     """
@@ -51,6 +56,7 @@ def main_background():
         rend = font.render("Hello, " + stats.statistic.name, True, (255, 255, 255))
         screen.blit(rend, rend.get_rect(topleft=(350, 20)))
     #pygame.draw.rect(screen, (255,0,0), (constants.SW/4+20,constants.SH/4-20, constants.SW/2-40, constants.SH/2+40),)
+
 
 def add_event():
     play_menu.disable()
@@ -76,13 +82,28 @@ play_menu = pygameMenu.Menu(screen,
 play_menu.add_option('Return to Menu', PYGAME_MENU_CLOSE)
 play_menu.add_option('Exit Game', add_event)
 
+
 # -----------------------------------------------------------------------------
-# Help menu
+#
 def stats_menu():
-    menu = pygameMenu.TextMenu(screen,
+    """
+    Help menu
+    """
+    stats_menu = pygameMenu.Menu(screen,
+                           bgfun=main_background,
+                           font=pygameMenu.fonts.FONT_NEVIS,
+                           menu_alpha=90,
+                           onclose=PYGAME_MENU_CLOSE,
+                           title='Account menu',
+                           title_offsety=5,
+                           window_height=constants.SH,
+                           window_width=constants.SW,
+                           #menu_height=450
+                           )
+    info_menu = pygameMenu.TextMenu(screen,
                                      bgfun=main_background,
                                      font=pygameMenu.fonts.FONT_NEVIS,
-                                     text_fontsize = 40,
+                                     text_fontsize = 30,
                                      menu_color=(30, 50, 107),  # Background color
                                      menu_color_title=(120, 45, 30),
                                      onclose=PYGAME_MENU_CLOSE,  # Pressing ESC button does nothing
@@ -90,11 +111,26 @@ def stats_menu():
                                      window_height=constants.SH,
                                      window_width=constants.SW
                                      )
-
+    info_menu.add_option('Back', PYGAME_MENU_BACK)
     for m in get_stats():
-        menu.add_line(m)
+        info_menu.add_line(m)
+
+
+    def reset_stats():
+        stats.statistic.save_empty_data()
+        # stats.super_users.delete_one({'name': stats.statistic.name})
+
+    def close_menu():
+        my_event = pygame.event.Event(pygame.KEYDOWN)
+        my_event.key = pygame.K_ESCAPE
+        pygame.event.post(my_event)
+
+    stats_menu.add_option('Statistics', info_menu)
+    stats_menu.add_option('Reset stats', reset_stats)
+    stats_menu.add_option('Return to Menu', close_menu)
+
     events = pygame.event.get()
-    menu.mainloop(events)
+    stats_menu.mainloop(events)
 
 # -----------------------------------------------------------------------------
 # About menu
@@ -111,10 +147,10 @@ settings_menu = pygameMenu.Menu(screen,
 settings_menu.add_selector('Difficulty', [('Easy', 'EASY'),
                                           ('Medium', 'MEDIUM'),
                                           ('Hard', 'HARD')],
-                           onreturn=None, onchange=None)
-settings_menu.add_selector('Sound', [('Easy', 'EASY'),
+                           onreturn=None, onchange=change_difficulty)
+settings_menu.add_selector('Sound', [('Low', 'LOW'),
                                      ('Medium', 'MEDIUM'),
-                                     ('Hard', 'HARD')],
+                                     ('Large', 'LARGE')],
                            onreturn=None, onchange=None)
 settings_menu.add_option('Return to Menu', PYGAME_MENU_BACK)
 # -----------------------------------------------------------------------------
@@ -151,17 +187,32 @@ menu = pygameMenu.Menu(screen,
                        menu_height = 450
                        )
 
+def end_game(player):
+    clock = pygame.time.Clock()
+    screen.fill(COLOR_BACKGROUND)
+    #pygame.draw.rect(screen, (255, 180, 0), ((constants.SW - 300) / 2, (constants.SH - 200) / 2 - 50, 300,200))
+    font = pygame.font.Font("fonts/Lobster_1.3.otf", 100)
+    f = font.render(f'The End, {player.stats.name}', 1, COLOR_WHITE)
+    f2 = font.render(f"score: {player.stats.score}", 1, COLOR_WHITE)
+    f3 = font.render(f"max score: {stats.statistic.max_score}", 1, COLOR_WHITE)
+    screen.blit(f, ((constants.SW - f.get_rect().width) / 2 - 100, constants.SH / 2 - 200))
+    screen.blit(f2, ((constants.SW - f.get_rect().width) / 2 - 100, constants.SH / 2 - 100))
+    screen.blit(f3, ((constants.SW - f.get_rect().width) / 2 - 100, constants.SH / 2))
+
+    pygame.display.flip()
+    clock.tick(1/5)
+
+
 def wait(fill=True):
     timer = 100
     clock = pygame.time.Clock()
     if fill:
         screen.fill(COLOR_BACKGROUND)
-    #pygame.draw.rect(screen, (255, 180, 0), ((constants.SW - 300) / 2, (constants.SH - 200) / 2 - 50, 300,200))
+    # pygame.draw.rect(screen, (255, 180, 0), ((constants.SW - 300) / 2, (constants.SH - 200) / 2 - 50, 300,200))
     font = pygame.font.Font("fonts/Lobster_1.3.otf", 100)
     f = font.render('Wait please', 1, COLOR_WHITE)
     screen.blit(f, ((constants.SW - f.get_rect().width) / 2, constants.SH / 2 - 50))
     pygame.display.flip()
-
 
     # while True:
     #     screen.fill((100, 100, 100))
@@ -208,7 +259,7 @@ def func_nick():
 menu.add_option(play_menu.get_title(), func)  # Add timer submenu
 menu.add_option("Change account", func_nick)  # Add settings submenu
 menu.add_option(settings_menu.get_title(), settings_menu)  # Add settings submenu
-menu.add_option("Stats menu", stats_menu)  # Add help submenu
+menu.add_option("Account", stats_menu)  # Add help submenu
 menu.add_option(about_menu.get_title(), about_menu)  # Add about submenu
 menu.add_option('Exit', PYGAME_MENU_EXIT)  # Add exit function
 

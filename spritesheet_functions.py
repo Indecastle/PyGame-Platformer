@@ -18,8 +18,7 @@ class SpriteSheet(object):
         self.sprite_sheet.set_colorkey(constants.BLACK)
         self.sprite_sheet = self.sprite_sheet.convert_alpha()
 
-    def get_image(self, x, y, width, height, count=(1,1)):
-
+    def get_image(self, x, y, width, height, count=(1,1), reverse=False):
         # Create a new blank image
         image = pygame.Surface([width*count[0], height*count[1]]).convert()
         # Assuming black works as the transparent color
@@ -32,7 +31,11 @@ class SpriteSheet(object):
                 image.blit(self.sprite_sheet, (width*i, height*j), (x, y, width, height))
 
         # Return the image
-        return image
+        if reverse:
+            image2 = pygame.transform.flip(image, True, False)
+            return image, image2
+        else:
+            return image
 
 
 def gen_block(background, pos, height, count, sprite_sheet, block=(0,0, 70, 70)):

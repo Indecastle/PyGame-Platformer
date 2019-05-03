@@ -4,6 +4,25 @@ from spritesheet_functions import SpriteSheet
 import blocks
 
 from pymongo import MongoClient
+
+import socket
+def is_connected(hostname="www.google.com"):
+  try:
+    # see if we can resolve the host name -- tells us if there is
+    # a DNS listening
+    host = socket.gethostbyname(hostname)
+    # connect to the host -- tells us if the host is actually
+    # reachable
+    s = socket.create_connection((host, 80), 2)
+    return True
+  except:
+     pass
+  return False
+
+print(is_connected())
+assert is_connected(), 'No internet'
+
+
 client = MongoClient('mongodb+srv://ezreal:5656265@firstcluster-xduia.mongodb.net/test?retryWrites=true')
 db = client.get_database('platformer')
 users = db.users
@@ -49,16 +68,30 @@ class Stats:
                 'max_score': self.max_score}
         return stats
 
-    def save_data(self):
-        stats = self.get_dict()
+    def get_empty_dict(self):
+        stats = {'count_death': 0,
+                'count_fire': 0,
+                'count_jump': 0,
+                'max_score': 0}
+        return stats
+
+    def save_data(self, empty=False):
+        stats = (self.get_empty_dict() if empty else self.get_dict())
         myquery = {"name": self.name}
         newvalues = {"$set": {"stats": stats}}
         users.update_one(myquery, newvalues)
+
+    def save_empty_data(self):
+        self.save_data(True)
+        self.max_score = 0
+        self.count_death = self.count_fire = self.count_jump = 0
+
 
 class Hud:
     screen = None
     player = None
     stats = None
+    count_health_rend = 0
 
     def __init__(self, screen, player, stats):
         self.screen = screen
@@ -92,5 +125,8 @@ class Hud:
         #     i+=1
 
     def draw(self):
+        if self.count_health_rend != self.player.health:
+            self.count_health_rend = self.player.health
+            self.rend_health()
         self.screen.blit(self.font_menu.render(str(self.stats.score), 1, (255,200,100)), (50, 50))
         self.screen.blit(self.image_health, (300, 50))

@@ -150,7 +150,7 @@ class Level_03(Level):
                                       (100,100), 'Y',self)
         platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (1200, shift - 11 * 70), (0, -5),
                                       (150, 100), 'X', self, (1,1))
-        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2100, shift - 11 * 70), (0, -6),
+        platforms.MovingTimerPlatform(platforms.STONE_PLATFORM_MIDDLE, (2100, shift - 11 * 70-10), (0, -6),
                                       (150, 100), 'X', self, (2,1))
 
         block = Finish(FINISH_ORANGE)

@@ -31,17 +31,14 @@ class Level_02(Level):
                   [platforms.GRASS_LEFT, 1000, 500],
                   [platforms.GRASS_MIDDLE, 1070, 500],
                   [platforms.GRASS_RIGHT, 1140, 500],
-                  [platforms.STONE_PLATFORM_LEFT, 1120, 280],
-                  [platforms.STONE_PLATFORM_MIDDLE, 1190, 280],
-                  [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
 
                   [platforms.STONE_PLATFORM_LEFT, 1120, 400],
                   [platforms.STONE_PLATFORM_MIDDLE, 1190, 400],
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 400],
 
-                  [platforms.STONE_PLATFORM_LEFT, 1120, 280],
-                  [platforms.STONE_PLATFORM_MIDDLE, 1190, 280],
-                  [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
+                  [platforms.STONE_PLATFORM_LEFT, 1120, 270],
+                  [platforms.STONE_PLATFORM_MIDDLE, 1190, 270],
+                  [platforms.STONE_PLATFORM_RIGHT, 1260, 270],
 
                   [blocks.BLOCK_GRASS_MIDDLE, 0 * 70, SH - 130, (100, 1)],
                   ]

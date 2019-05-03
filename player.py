@@ -1,11 +1,11 @@
 import pygame
 import entity
 
-import constants
+import constants, settings
 from platforms import MovingPlatform, LateralPlatform, PlatformOnlyUp
 from spritesheet_functions import SpriteSheet
 import blocks
-import enemy
+import enemy, images
 
 
 class Player(entity.Entity):
@@ -34,55 +34,43 @@ class Player(entity.Entity):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
 
-        sprite_sheet = SpriteSheet("images/p1_walk.png")
-        # Load all the right facing images into a list
-        image = sprite_sheet.get_image(0, 0, 66, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(66, 0, 66, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(132, 0, 67, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(0, 93, 66, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(66, 93, 66, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(132, 93, 72, 90)
-        self.walking_frames_r.append(image)
-        image = sprite_sheet.get_image(0, 186, 70, 90)
-        self.walking_frames_r.append(image)
 
-        # Load all the right facing images, then flip them
-        # to face left.
-        image = sprite_sheet.get_image(0, 0, 66, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(66, 0, 66, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(132, 0, 67, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(0, 93, 66, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(66, 93, 66, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(132, 93, 72, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
-        image = sprite_sheet.get_image(0, 186, 70, 90)
-        image = pygame.transform.flip(image, True, False)
-        self.walking_frames_l.append(image)
+        data = images.player
+        sprite_sheet = SpriteSheet(data[0])
+        for sprite in data[1]:
+            image = sprite_sheet.get_image(*sprite)
+            self.walking_frames_r.append(image)
+        for sprite in data[1][-2:0:-1]:
+            image = sprite_sheet.get_image(*sprite)
+            self.walking_frames_r.append(image)
+
+        for image in self.walking_frames_r[::-1]:
+            image = pygame.transform.flip(image, True, False)
+            self.walking_frames_l.append(image)
+
+        self.image_stay = sprite_sheet.get_image(*data[2], reverse=True)
+        self.image_jump = sprite_sheet.get_image(*data[3], reverse=True)
+        self.image_fire = sprite_sheet.get_image(*data[4], reverse=True)
 
         self.image = self.walking_frames_r[0]
         self.rect = self.image.get_rect()
+        rect2 = self.rect.inflate(-30,-30)
+        self.shift_rect = ((self.rect.width  - rect2.width)/2 , self.rect.height - rect2.height)
+        self.rect = rect2
+
+        if settings.difficulty == "EASY":
+            self.max_health = self.health = 8
+        elif settings.difficulty == "MEDIUM":
+            self.max_health = self.health = 4
+        elif settings.difficulty == "HARD":
+            self.max_health = self.health = 2
 
     def update(self):
         self.time_god_show()
 
         if self._timer1 > 0:
             self._timer1 -= 1
+
         """ Move the player. """
         # Gravity
         self.calc_grav()
@@ -135,16 +123,24 @@ class Player(entity.Entity):
 
         if self.change_y == 0:
             if self.direction == "R":
-                frame = (self.pos_move // 40) % (len(self.walking_frames_r) - 2)
-                self.temp_image = self.walking_frames_r[frame]
+                if self.change_x != 0:
+                    frame = (self.pos_move // 60) % len(self.walking_frames_r)
+                    self.temp_image = self.walking_frames_r[frame]
+                else:
+                    self.pos_move = 0
+                    self.temp_image = self.image_stay[0]
             else:
-                frame = (self.pos_move // 40) % (len(self.walking_frames_l) - 2)
-                self.temp_image = self.walking_frames_l[frame]
+                if self.change_x != 0:
+                    frame = (self.pos_move // 60) % len(self.walking_frames_l)
+                    self.temp_image = self.walking_frames_l[frame]
+                else:
+                    self.pos_move = 0
+                    self.temp_image = self.image_stay[1]
         else:
             if self.direction == "R":
-                self.temp_image = self.walking_frames_r[6]
+                self.temp_image = self.image_jump[0]
             else:
-                self.temp_image = self.walking_frames_l[6]
+                self.temp_image = self.image_jump[1]
 
         if self.image != self.temp_image:
             self.image = self.temp_image.copy()
@@ -178,7 +174,7 @@ class Player(entity.Entity):
         if self.cheat_god or self.time_god:
             return
         self.health -= damage
-        self.stats.HUD.rend_health()
+        #self.stats.HUD.rend_health()
         self.time_god = True
         if self.health <= 0:
             self.death()
@@ -258,3 +254,6 @@ class Player(entity.Entity):
             enemy1 = enemy.Enemy2(pos, (2, 0), self.level, self, 1, 10)
             #enemy1.collide_damage = 1
             #enemy1.god = True
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x - self.shift_rect[0], self.rect.y - self.shift_rect[1]))
