@@ -1,8 +1,11 @@
 import pygame
 import pygameMenu, os
 from pygameMenu.locals import *
-import constants, settings
+import constants, settings, blocks
+from constants import SW, SH
+from spritesheet_functions import *
 import stats
+from menus.background_menu import Background_live
 
 
 
@@ -19,7 +22,7 @@ ABOUT = ['Game: {0}'.format("Platformer v1.0 Beta"),
          PYGAMEMENU_TEXT_NEWLINE,
          'Email: {0}'.format(r"andred9991@gmail.com")]
 COLOR_BLUE = (12, 12, 200)
-COLOR_BACKGROUND = [128, 0, 128]
+COLOR_BACKGROUND = (75, 172, 198)
 COLOR_WHITE = (255, 255, 255)
 FPS = 60
 H_SIZE = 600  # Height of window size
@@ -29,6 +32,7 @@ HELP = ['Press ESC to enable/disable Menu',
         'Press UP/DOWN to move through Menu',
         'Press LEFT/RIGHT to move through Selectors']
 font = pygame.font.SysFont("nevis", 100)
+backgl = Background_live()
 
 
 def get_stats():
@@ -46,12 +50,10 @@ def change_difficulty(d):
 
 
 def main_background():
-    """
-    Function used by menus, draw on background while menu is active.
+    backgl.update()
+    backgl.draw(screen)
 
-    :return: None
-    """
-    screen.fill(COLOR_BACKGROUND)
+    #screen.fill(COLOR_BACKGROUND)
     if stats.statistic is not None:
         rend = font.render("Hello, " + stats.statistic.name, True, (255, 255, 255))
         screen.blit(rend, rend.get_rect(topleft=(350, 20)))
@@ -230,16 +232,18 @@ def lose(fill=True):
     f = font.render('You Lose', 1, COLOR_WHITE)
     screen.blit(f, ((constants.SW - f.get_rect().width) / 2, constants.SH / 2 - 50))
     pygame.display.flip()
-
-
-    timer = 100
+    pygame.display.flip()
     clock = pygame.time.Clock()
-    while True:
-        clock.tick(60)
-        if timer > 0:
-            timer -= 1
-        else:
-            return
+    clock.tick(1/2)
+
+    # timer = 100
+    # clock = pygame.time.Clock()
+    # while True:
+    #     clock.tick(60)
+    #     if timer > 0:
+    #         timer -= 1
+    #     else:
+    #         return
 
 
 def func():
@@ -262,6 +266,12 @@ menu.add_option(settings_menu.get_title(), settings_menu)  # Add settings submen
 menu.add_option("Account", stats_menu)  # Add help submenu
 menu.add_option(about_menu.get_title(), about_menu)  # Add about submenu
 menu.add_option('Exit', PYGAME_MENU_EXIT)  # Add exit function
+
+
+
+
+
+
 
 
 

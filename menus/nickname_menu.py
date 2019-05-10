@@ -151,6 +151,8 @@ class MenuControl(object):
     def back(self):
         if stats.statistic is not None:
             self.done = True
+        else:
+            pg.event.post(pg.event.Event(pg.QUIT))
 
 
 

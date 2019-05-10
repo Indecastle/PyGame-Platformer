@@ -38,3 +38,7 @@ HEAL_EMPTY = (0,47, 53,45)
 BULLET_LASER_GREEN = ("images/pack/Request pack/Tiles/laserGreenHorizontal.png", (0,26, 70,18) )
 BULLET_LASER_PURPLE_DOT = ("images/pack/Request pack/Tiles/laserPurpleDot.png", (31,29, 10,10) )
 BULLET_LASER_PURPLE = ("images/pack/Request pack/Tiles/laserPurple.png", (19,29, 34,10) )
+
+
+
+

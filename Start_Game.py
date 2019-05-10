@@ -1,6 +1,6 @@
 import pygame, time, os
 
-import constants
+import constants, settings
 import super_level
 from levels import *
 from menus.menu import Console, Menu01
@@ -17,6 +17,7 @@ def main():
     menu.enable()
     events = pygame.event.get()
     menu.mainloop(events)
+    #settings.save_settings()
     pygame.quit()
 
 

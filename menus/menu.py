@@ -88,6 +88,8 @@ class Console:
     maxLength = 17
     case = 0
     timer = 100
+    admin_commands = ['god', 'jump', 'speed', 'speed', 'fun', 'gravity', 'impulse']
+    commands = ['egg', 'name']
 
 
     def __init__(self, screen, player):
@@ -151,12 +153,12 @@ class Console:
             self.show_text()
 
     def cheat_event(self):
-        if sv_cheats:
-            text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
-            command = text[0]
-            args = text[1:]
-            self.text2 = "None"
-            try:
+        text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
+        command = text[0]
+        args = text[1:]
+        self.text2 = "None"
+        try:
+            if sv_cheats:
                 if command == 'god':
                     self.player.cheat_god = not self.player.cheat_god
                     self.text2 = 'God On' if self.player.cheat_god else 'God Off'
@@ -168,10 +170,10 @@ class Console:
                     speed = int(args[0])
                     self.player.speed_X = speed
                     self.text2 = f'speed = {speed}'
-                elif command == 'sv_gravity':
+                elif command == 'gravity':
                     value = float(args[0])
                     self.player.level.gravity = .35 * value / 800
-                    self.text2 = f'sv_gravity = {value}'
+                    self.text2 = f'gravity = {value}'
                 elif command == 'impulse':
                     if args[0] == '101':
                         self.player.health = self.player.max_health
@@ -181,10 +183,14 @@ class Console:
                     value = float(args[0])
                     self.player.cheat_fun = True if value > 0 else False
                     self.text2 = f'Fun = {"on" if value > 0 else "off"}'
-            except (ValueError, IndexError):
-                self.text2 = 'Error 404'
-        else:
-            self.text2 = 'No access'
+            elif command in self.admin_commands:
+                self.text2 = 'No access'
+
+            if command == 'egg':
+                if self.player.health == 1 and self.player.stats.score == 1000:
+                    self.text2 = 'EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG'
+        except (ValueError, IndexError):
+            self.text2 = 'Error 404'
         self.image2 = self.font2.render(self.text2, True, constants.WHITE)
         self.is_show_text = True
         self._timer = self.timer
@@ -195,3 +201,6 @@ class Console:
             self._timer -= 1
         else:
             self.is_show_text = False
+
+
+
