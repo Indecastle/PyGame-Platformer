@@ -31,7 +31,6 @@ statistic = None
 
 class Stats:
     screen = None
-    HUD = None
     player = None
     name = None
     password = None
@@ -79,6 +78,11 @@ class Stats:
         stats = (self.get_empty_dict() if empty else self.get_dict())
         myquery = {"name": self.name}
         newvalues = {"$set": {"stats": stats}}
+        users.update_one(myquery, newvalues)
+
+    def save_new_password(self, password):
+        myquery = {"name": self.name}
+        newvalues = {"$set": {"password": password}}
         users.update_one(myquery, newvalues)
 
     def save_empty_data(self):

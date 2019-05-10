@@ -7,7 +7,15 @@ from spritesheet_functions import SpriteSheet
 import blocks
 import enemy, images
 
+def singleton(class_):
+    instances = {}
+    def getinstance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+    return getinstance
 
+@singleton
 class Player(entity.Entity):
     stats = None
     health = 8
@@ -19,7 +27,7 @@ class Player(entity.Entity):
     walking_frames_r = []
     direction = "R"
 
-    _timer1, timer1 = 100, 5 # fire
+    _timer1, timer1 = 5, 5 # fire
     _timer2, timer2 = 200,200 # time_god
     _timer3, timer3 = 10,10 # time_god_2
     time_god = False
@@ -33,7 +41,6 @@ class Player(entity.Entity):
     def __init__(self):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
-
 
         data = images.player
         sprite_sheet = SpriteSheet(data[0])
@@ -57,6 +64,22 @@ class Player(entity.Entity):
         rect2 = self.rect.inflate(-30,-30)
         self.shift_rect = ((self.rect.width  - rect2.width)/2 , self.rect.height - rect2.height)
         self.rect = rect2
+
+        self.init2()
+
+    def init2(self):
+        self.pos_move = 0
+        self.speed_X = 5
+        self.speed_jump = -10
+        self.change_x = self.change_y = 0
+        self._timer1, self.timer1 = 5, 5  # fire
+        self._timer2, self.timer2 = 100, 100  # time_god
+        self._timer3, self.timer3 = 10, 10  # time_god_2
+        self.time_god = False
+        self.time_god_2 = False
+        self.temp_image = None  # for alpha impulse
+        self.cheat_god = False
+        self.cheat_fun = False
 
         if settings.difficulty == "EASY":
             self.max_health = self.health = 8
@@ -124,14 +147,14 @@ class Player(entity.Entity):
         if self.change_y == 0:
             if self.direction == "R":
                 if self.change_x != 0:
-                    frame = (self.pos_move // 60) % len(self.walking_frames_r)
+                    frame = (self.pos_move // 50) % len(self.walking_frames_r)
                     self.temp_image = self.walking_frames_r[frame]
                 else:
                     self.pos_move = 0
                     self.temp_image = self.image_stay[0]
             else:
                 if self.change_x != 0:
-                    frame = (self.pos_move // 60) % len(self.walking_frames_l)
+                    frame = (self.pos_move // 50) % len(self.walking_frames_l)
                     self.temp_image = self.walking_frames_l[frame]
                 else:
                     self.pos_move = 0

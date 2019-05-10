@@ -6,21 +6,20 @@ import stats, menus.menu
 from menus.background_menu import backgl
 KEY_REPEAT_SETTING = (200,70)
 
-class MenuControl(object):
+class MenuControl2(object):
     def __init__(self, screena):
         self.screen = screena
         self.clock = pg.time.Clock()
         self.fps = 60.0
         self.done = False
         self.current = 0
-        screen_color = TextBox((200,100,300,40), id = 0, command=None, active=True)
-        text_color = TextBox((200,150,300,40), id = 1, command=None, password=True)
+        textbox1 = TextBox((200,100,300,40), id = 0, command=None, active=True, password=True)
+        textbox2 = TextBox((200,150,300,40), id = 1, command=None, password=True)
 
-        button_login = ButtonBox((200,200,80,30), ' Login', command=self.event_login, id = 2)
-        button_register = ButtonBox((300, 200, 100, 30), 'Register', command=self.event_register, id = 3)
-        button_close = ButtonBox((200, 250, 80, 30), ' Back', command=self.back, id=4)
+        button_login = ButtonBox((200,200,100,30), 'Change', command=self.event_login, id = 2)
+        button_close = ButtonBox((200, 250, 80, 30), ' Back', command=self.back, id=3)
         self.prompts = self.make_prompts()
-        self.boxes = [screen_color, text_color, button_login, button_register, button_close]
+        self.boxes = [textbox1, textbox2, button_login, button_close]
         self.color = (100,100,100)
 
 
@@ -30,15 +29,14 @@ class MenuControl(object):
         rendered = []
         font = pg.font.SysFont("arial", 33)
 
-        message = 'Account menu'
-        rend = font.render(message, True, (0, 0, 0))
+        message = 'Change password menu'
+        rend = font.render(message, True, (0,0,0))
         rendered.append((rend, rend.get_rect(topright=(400, 30))))
 
-        message = 'Nickname:'
+        message = 'old password:'
         rend = font.render(message, True, color)
         rendered.append((rend, rend.get_rect(topright=(190,105))))
-
-        message = 'Password:'
+        message = 'new password:'
         rend = font.render(message, True, color)
         rendered.append((rend, rend.get_rect(topright=(190,155))))
         return rendered
@@ -95,68 +93,28 @@ class MenuControl(object):
         pg.key.set_repeat()
 
     def event_login(self):
-        name = self.boxes[0].final.strip()
-        password = self.boxes[1].final.strip()
+        old_pass = self.boxes[0].final.strip()
+        new_pass = self.boxes[1].final.strip()
         self.boxes[1].buffer = []
-        print(f'name : {name}, password : {password}')
+        self.boxes[0].buffer = []
+        print(f'old_pass: {old_pass}, new_pass: {new_pass}')
 
-        info = stats.users.find_one({'name':name, 'password':password})
-        if info is not None:
-            stats.statistic = stats.Stats(self.screen, name, password)
-            stats.statistic.max_score = int(info['stats']['max_score'])
-            stats.statistic.count_death = int(info['stats']['count_death'])
-            stats.statistic.count_jump = int(info['stats']['count_jump'])
-            stats.statistic.count_fire = int(info['stats']['count_fire'])
+        if old_pass == new_pass:
+            self.message("new pass = old pass")
+        elif stats.statistic.password == old_pass:
+            stats.statistic.save_new_password(new_pass)
             self.message("OK")
-            pprint.pprint(info)
             self.back()
-            check = stats.super_users.find_one({'name': name})
-            pprint.pprint(check)
-            menus.menu.sv_cheats = (False if check is None else True)
         else:
-            self.message("invalid")
-
-    def event_register(self):
-        name = self.boxes[0].final.strip()
-        password = self.boxes[1].final.strip()
-        print(f'name : {name}, password : {password}')
-
-        info = stats.users.find_one({'name': name})
-
-        if password == '' and name == '':
-            self.message("Invalid nickname and password.")
-        elif password == '':
-            self.message("Invalid password.")
-        elif name == '':
-            self.message("Invalid nickname.")
-        elif info is not None:
-            self.message("This name is exist.")
-        elif info is not None and password == '':
-            self.message("Invalid password. This name is exist.")
-        else:
-            info = { 'name': name,
-                     'password': password,
-                     'stats': {'count_death': 0,
-                               'count_fire': 0,
-                               'count_jump': 0,
-                               'max_score': 0}}
-            stats.users.insert_one(info)
-            stats.statistic = stats.Stats(self.screen, name, password)
-            stats.statistic.max_score = int(info['stats']['max_score'])
-            stats.statistic.count_death = int(info['stats']['count_death'])
-            stats.statistic.count_jump = int(info['stats']['count_jump'])
-            stats.statistic.count_fire = int(info['stats']['count_fire'])
-            self.message("OK")
-            pprint.pprint(info)
-            self.back()
+            self.message("invalid password")
 
     def message(self, text):
         font = pg.font.SysFont("arial", 40)
         rend = font.render(text, True, (255,255,255))
-        if len(self.prompts) == 2:
+        if len(self.prompts) == 3:
             self.prompts.append((rend, rend.get_rect(topleft=(10, 300))))
         else:
-            self.prompts[2] = (rend, rend.get_rect(topleft=(10, 300)))
+            self.prompts[3] = (rend, rend.get_rect(topleft=(10, 300)))
 
     def back(self):
         if stats.statistic is not None:

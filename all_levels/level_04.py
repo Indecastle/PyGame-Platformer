@@ -13,9 +13,9 @@ class Level_04(Level):
     _timer1, timer1 = 100, 30
 
     def __init__(self, player):
-
         # Call the parent constructor
         Level.__init__(self, player)
+
         #self.mega_shift = SH - 900  # only for level_01 (1600x900)
 
         self.background_fill = (162, 231, 238)

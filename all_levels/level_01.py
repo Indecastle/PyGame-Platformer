@@ -41,17 +41,32 @@ class Level_01(Level):
                   [blocks.BLOCK_GRASS_MIDDLE, 0 * 70, SH - 130, (100, 1)],
                   ]
 
-        
-
         for platform in level:
-            if len(platform) == 4:
-                block = platforms.Platform(platform[0], platform[3])
+            if len(platform) > 3:
+                if platform[3] == 'Lateral':
+                    block = platforms.LateralPlatform(platform[0], platform[4], platform[5])
+                    self.lateral_list.add(block)
+                    block.set_pos(platform[1], platform[2] + self.mega_shift)
+                elif platform[3] == 'OnlyUp':
+                    if len(platform) == 5:
+                        block = platforms.PlatformOnlyUp(platform[0], platform[4])
+                    else:
+                        block = platforms.PlatformOnlyUp(platform[0])
+                    self.platform_list.add(block)
+                    block.rect.x = platform[1]
+                    block.rect.y = platform[2] + self.mega_shift
+                else:
+                    block = platforms.Platform(platform[0], platform[3])
+                    self.platform_list.add(block)
+                    block.rect.x = platform[1]
+                    block.rect.y = platform[2] + self.mega_shift
             else:
                 block = platforms.Platform(platform[0])
-            block.rect.x = platform[1]
-            block.rect.y = platform[2] + self.mega_shift
+                self.platform_list.add(block)
+                block.rect.x = platform[1]
+                block.rect.y = platform[2] + self.mega_shift
             block.player = self.player
-            self.platform_list.add(block)
+            block.level = self
             self.all_platforms_list.add(block)
 
         # Add a custom moving platform

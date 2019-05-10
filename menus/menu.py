@@ -177,7 +177,6 @@ class Console:
                 elif command == 'impulse':
                     if args[0] == '101':
                         self.player.health = self.player.max_health
-                        self.player.stats.HUD.rend_health()
                         self.text2 = 'Succesfull'
                 elif command == 'fun':
                     value = float(args[0])
