@@ -99,6 +99,7 @@ class Entity(pygame.sprite.Sprite):
             if lateral:
                 if not any(lat.check_onplatform(self) for lat in lateral):
                     canJump = False
+                    print(1)
             if canJump:
                 self.change_y = self.speed_jump - self.level.gravity
             return canJump

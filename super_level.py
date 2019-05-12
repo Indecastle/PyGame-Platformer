@@ -129,11 +129,6 @@ class Level():
         self.entity_list.update()
         self.platform_list.update()
 
-
-
-
-        
-
         # shift the world left (-x)
         if self.player.rect.x > half_SW:
             real_pos = self.player.rect.x - self.world_shift_x
@@ -197,17 +192,12 @@ class Level():
             screen.blit(self.background_near,(self.world_shift_x, self.world_shift_y ))
         else:
             screen.blit(self.background,(self.world_shift_x // 3, self.world_shift_y // 3+self.mega_shift))
-            
-        
 
         self.platform_list.draw(screen)
         self.lateral_list.draw(screen)
         self.enemy_list.draw(screen)
-
-
-    def draw_adv(self, screen):
+        self.player.draw(screen)
         self.advance_list.draw(screen)
-
 
     def shift_world(self, shift_x, shift_y):
 

@@ -87,7 +87,7 @@ class Console:
     font = pygame.font.match_font("Arial")
     maxLength = 17
     case = 0
-    timer = 100
+    timer = 200
     admin_commands = ['god', 'jump', 'speed', 'speed', 'fun', 'gravity', 'impulse']
     commands = ['egg', 'name']
 
@@ -105,6 +105,7 @@ class Console:
         self.image2 = self.font.render(self.text2, True, constants.WHITE)
         self.is_show_text = False
         self._timer = self.timer
+        self.egg = False
 
     def update(self, events):
         if not self.is_enabled:
@@ -155,7 +156,7 @@ class Console:
     def cheat_event(self):
         text = re.sub(r' {2,}', ' ', self.text).rstrip().split(' ')
         command = text[0]
-        args = text[1:]
+        args = text[1:] + ['']
         self.text2 = "None"
         try:
             if sv_cheats:
@@ -186,8 +187,20 @@ class Console:
                 self.text2 = 'No access'
 
             if command == 'egg':
-                if self.player.health == 1 and self.player.stats.score == 1000:
-                    self.text2 = 'EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG EGG'
+                if self.player.health == 1 and 100 <= self.player.stats.score <= 1100:
+                    self.text2 = 'you can use command "mario [\'\',1, 2] [small]"'
+                    self.egg = True
+            elif command == 'mario' and self.egg:
+                if args[0] == '' or args[0] == '1' or args[0] == 'small':
+                    if args[0] == 'small' or args[0] == '1' and args[1] == 'small':
+                        self.player.init_image(2, True)
+                    elif args[0] == '1' or args[0] == '':
+                        self.player.init_image(1, True)
+                elif args[0] == '2':
+                    if args[1] == '':
+                        self.player.init_image(3, True)
+                    elif args[1] == 'small':
+                        self.player.init_image(4, True)
         except (ValueError, IndexError):
             self.text2 = 'Error 404'
         self.image2 = self.font2.render(self.text2, True, constants.WHITE)

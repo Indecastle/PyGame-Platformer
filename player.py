@@ -18,60 +18,52 @@ def singleton(class_):
 @singleton
 class Player(entity.Entity):
     stats = None
-    health = 8
-    max_health = 8
-    collide_damage = 3
-    pos_move = 0
-    speed_X = 5
-    walking_frames_l = []
-    walking_frames_r = []
-    direction = "R"
-
-    _timer1, timer1 = 5, 5 # fire
-    _timer2, timer2 = 200,200 # time_god
-    _timer3, timer3 = 10,10 # time_god_2
-    time_god = False
-    time_god_2 = False
-    temp_image = None  # for alpha impulse
-
-    cheat_god = False
-    cheat_fun = False
 
 
     def __init__(self):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
+        self.init_image()
+        self.init2()
 
-        data = images.player
+    def init_image(self, number=0, after=False):
+        self.walking_frames_l = []
+        self.walking_frames_r = []
+
+        data = images.player_list[number]
         sprite_sheet = SpriteSheet(data[0])
+
         for sprite in data[1]:
-            image = sprite_sheet.get_image(*sprite)
+            image = sprite_sheet.get_image(*sprite, scale=data[5])
             self.walking_frames_r.append(image)
-        for sprite in data[1][-2:0:-1]:
-            image = sprite_sheet.get_image(*sprite)
-            self.walking_frames_r.append(image)
+        # for sprite in data[1][-2:0:-1]:
+        #     image = sprite_sheet.get_image(*sprite)
+        #     self.walking_frames_r.append(image)
 
         for image in self.walking_frames_r[::-1]:
             image = pygame.transform.flip(image, True, False)
             self.walking_frames_l.append(image)
 
-        self.image_stay = sprite_sheet.get_image(*data[2], reverse=True)
-        self.image_jump = sprite_sheet.get_image(*data[3], reverse=True)
-        self.image_fire = sprite_sheet.get_image(*data[4], reverse=True)
-
+        self.image_stay = sprite_sheet.get_image(*data[2], scale=data[5], reverse=True)
+        self.image_jump = sprite_sheet.get_image(*data[3], scale=data[5], reverse=True)
+        self.image_fire = sprite_sheet.get_image(*data[4], scale=data[5], reverse=True)
+        pos = (0,0)
+        if after:
+            pos = self.rect.topleft
         self.image = self.walking_frames_r[0]
         self.rect = self.image.get_rect()
-        rect2 = self.rect.inflate(-30,-30)
-        self.shift_rect = ((self.rect.width  - rect2.width)/2 , self.rect.height - rect2.height)
+        rect2 = self.rect.inflate(*data[6])
+        self.shift_rect = ((self.rect.width - rect2.width) / 2, self.rect.height - rect2.height)
         self.rect = rect2
-
-        self.init2()
+        self.rect.topleft = pos
 
     def init2(self):
+        self.collide_damage = 3
         self.pos_move = 0
         self.speed_X = 5
         self.speed_jump = -10
         self.change_x = self.change_y = 0
+        self.direction = "R"
         self._timer1, self.timer1 = 5, 5  # fire
         self._timer2, self.timer2 = 100, 100  # time_god
         self._timer3, self.timer3 = 10, 10  # time_god_2
@@ -164,6 +156,9 @@ class Player(entity.Entity):
                 self.temp_image = self.image_jump[0]
             else:
                 self.temp_image = self.image_jump[1]
+
+        if self._timer1 > 0:  # if fire
+            self.temp_image = self.image_fire[0 if self.direction == 'R' else 1]
 
         if self.image != self.temp_image:
             self.image = self.temp_image.copy()

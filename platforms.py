@@ -80,7 +80,7 @@ class LateralPlatform(Platform):
             self.rect.y = y + self.size_one[1] - self.size_y
 
     def check_inblock(self, entity) -> bool:
-        x_center = entity.rect.x + entity.rect.width / 2
+        x_center = entity.rect.x + entity.rect.width // 2
         y_bottom = entity.rect.bottom
         if self.rect.left < x_center < self.rect.right  and  self.rect.top < y_bottom < self.rect.bottom:
             return True
@@ -89,13 +89,13 @@ class LateralPlatform(Platform):
     def check_onplatform(self, entity) -> bool:
         if not self.check_inblock(entity):
             return False
-        x_center = entity.rect.x + entity.rect.width / 2
+        x_center = entity.rect.x + entity.rect.width // 2
         diff = x_center - self.rect.x
         y = self.rect.bottom - ((self.size_y - diff) if self.inverse else (diff*self.diff_size)) - 70
         return entity.rect.bottom >= y and (0 < diff < self.size_x)
 
     def onplatform(self, entity, force = False):
-        x_center = entity.rect.x + entity.rect.width / 2
+        x_center = entity.rect.x + entity.rect.width // 2
         x_center2 = x_center - entity.change_x
         diff2 = x_center2 - self.rect.x
         diff = x_center - self.rect.x

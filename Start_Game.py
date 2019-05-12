@@ -99,8 +99,6 @@ def play():
         super_level.current_level.update()
 #gwt
         super_level.current_level.draw(screen)
-        player.draw(screen)
-        super_level.current_level.draw_adv(screen)
         HUD.draw()
 
         play_menu.mainloop(events)

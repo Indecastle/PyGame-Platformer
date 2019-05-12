@@ -18,18 +18,19 @@ class SpriteSheet(object):
         self.sprite_sheet.set_colorkey(constants.BLACK)
         self.sprite_sheet = self.sprite_sheet.convert_alpha()
 
-    def get_image(self, x, y, width, height, count=(1,1), reverse=False):
+    def get_image(self, x, y, width, height, count=(1, 1), reverse=False, scale=(0, 0), colorkey=constants.BLACK):
         # Create a new blank image
         image = pygame.Surface([width*count[0], height*count[1]]).convert()
         # Assuming black works as the transparent color
-        image.set_colorkey(constants.BLACK)
+        image.set_colorkey(colorkey)
         image = image.convert_alpha()
 
         # Copy the sprite from the large sheet onto the smaller image
         for i in range(count[0]):
             for j in range(count[1]):
                 image.blit(self.sprite_sheet, (width*i, height*j), (x, y, width, height))
-
+        if scale != (0, 0):
+            image = pygame.transform.scale(image, scale)
         # Return the image
         if reverse:
             image2 = pygame.transform.flip(image, True, False)
