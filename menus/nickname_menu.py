@@ -6,6 +6,9 @@ import stats, menus.menu
 from menus.background_menu import backgl
 KEY_REPEAT_SETTING = (200,70)
 
+from sklearn.externals import joblib
+clf = joblib.load('menus/injection_model.pkl')
+
 class MenuControl(object):
     def __init__(self, screena):
         self.screen = screena
@@ -13,15 +16,23 @@ class MenuControl(object):
         self.fps = 60.0
         self.done = False
         self.current = 0
-        screen_color = TextBox((200,100,300,40), id = 0, command=None, active=True)
-        text_color = TextBox((200,150,300,40), id = 1, command=None, password=True)
+        screen_color = TextBox((500,250,300,40), id = 0, command=self.check_email, active=True)
+        text_color = TextBox((500,300,300,40), id = 1, command=None, password=True)
 
-        button_login = ButtonBox((200,200,80,30), ' Login', command=self.event_login, id = 2)
-        button_register = ButtonBox((300, 200, 100, 30), 'Register', command=self.event_register, id = 3)
-        button_close = ButtonBox((200, 250, 80, 30), ' Back', command=self.back, id=4)
+        button_login = ButtonBox((500,350,80,30), ' Login', command=self.event_login, id = 2)
+        button_register = ButtonBox((600, 350, 100, 30), 'Register', command=self.event_register, id = 3)
+        button_close = ButtonBox((500, 400, 80, 30), ' Back', command=self.back, id=4)
         self.prompts = self.make_prompts()
         self.boxes = [screen_color, text_color, button_login, button_register, button_close]
         self.color = (100,100,100)
+
+    def check_email(self, id, text):
+        input_data = [text]
+        ints = clf.predict(input_data).astype(int)
+        if ints[0] == 1:
+            self.message("its Email")
+        else:
+            self.message("its not Email")
 
 
     def make_prompts(self, color="white"):
@@ -32,15 +43,15 @@ class MenuControl(object):
 
         message = 'Account menu'
         rend = font.render(message, True, (0, 0, 0))
-        rendered.append((rend, rend.get_rect(topright=(400, 30))))
+        rendered.append((rend, rend.get_rect(topright=(700, 180))))
 
         message = 'Nickname:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topright=(190,105))))
+        rendered.append((rend, rend.get_rect(topright=(490,255))))
 
         message = 'Password:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topright=(190,155))))
+        rendered.append((rend, rend.get_rect(topright=(490,305))))
         return rendered
 
     def event_loop(self):
@@ -115,10 +126,10 @@ class MenuControl(object):
             menus.menu.sv_cheats = (False if check is None else True)
         else:
             self.message("invalid")
-
+пше 
     def event_register(self):
         name = self.boxes[0].final.strip()
-        password = self.boxes[1].final.strip()
+        password = hash(self.boxes[1].final.strip())
         print(f'name : {name}, password : {password}')
 
         info = stats.users.find_one({'name': name})
@@ -154,9 +165,9 @@ class MenuControl(object):
         font = pg.font.SysFont("arial", 40)
         rend = font.render(text, True, (255,255,255))
         if len(self.prompts) == 2:
-            self.prompts.append((rend, rend.get_rect(topleft=(10, 300))))
+            self.prompts.append((rend, rend.get_rect(topleft=(310, 450))))
         else:
-            self.prompts[2] = (rend, rend.get_rect(topleft=(10, 300)))
+            self.prompts[2] = (rend, rend.get_rect(topleft=(310, 450)))
 
     def back(self):
         if stats.statistic is not None:

@@ -13,11 +13,11 @@ class MenuControl2(object):
         self.fps = 60.0
         self.done = False
         self.current = 0
-        textbox1 = TextBox((200,100,300,40), id = 0, command=None, active=True, password=True)
-        textbox2 = TextBox((200,150,300,40), id = 1, command=None, password=True)
+        textbox1 = TextBox((500,250,300,40), id = 0, command=None, active=True, password=True)
+        textbox2 = TextBox((500,300,300,40), id = 1, command=None, password=True)
 
-        button_login = ButtonBox((200,200,100,30), 'Change', command=self.event_login, id = 2)
-        button_close = ButtonBox((200, 250, 80, 30), ' Back', command=self.back, id=3)
+        button_login = ButtonBox((500, 350, 100, 30), 'Change', command=self.event_login, id = 2)
+        button_close = ButtonBox((500, 400, 80, 30), ' Back', command=self.back, id=3)
         self.prompts = self.make_prompts()
         self.boxes = [textbox1, textbox2, button_login, button_close]
         self.color = (100,100,100)
@@ -31,14 +31,14 @@ class MenuControl2(object):
 
         message = 'Change password menu'
         rend = font.render(message, True, (0,0,0))
-        rendered.append((rend, rend.get_rect(topright=(400, 30))))
+        rendered.append((rend, rend.get_rect(topright=(700, 180))))
 
         message = 'old password:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topright=(190,105))))
+        rendered.append((rend, rend.get_rect(topright=(490,255))))
         message = 'new password:'
         rend = font.render(message, True, color)
-        rendered.append((rend, rend.get_rect(topright=(190,155))))
+        rendered.append((rend, rend.get_rect(topright=(490,305))))
         return rendered
 
     def event_loop(self):
@@ -112,9 +112,9 @@ class MenuControl2(object):
         font = pg.font.SysFont("arial", 40)
         rend = font.render(text, True, (255,255,255))
         if len(self.prompts) == 3:
-            self.prompts.append((rend, rend.get_rect(topleft=(10, 300))))
+            self.prompts.append((rend, rend.get_rect(topleft=(310, 450))))
         else:
-            self.prompts[3] = (rend, rend.get_rect(topleft=(10, 300)))
+            self.prompts[3] = (rend, rend.get_rect(topleft=(310, 450)))
 
     def back(self):
         if stats.statistic is not None:
