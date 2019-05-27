@@ -126,7 +126,7 @@ class MenuControl(object):
             menus.menu.sv_cheats = (False if check is None else True)
         else:
             self.message("invalid")
-пше 
+
     def event_register(self):
         name = self.boxes[0].final.strip()
         password = hash(self.boxes[1].final.strip())

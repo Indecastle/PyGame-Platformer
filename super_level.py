@@ -4,8 +4,8 @@ import constants
 import platforms
 from spritesheet_functions import SpriteSheet
 from menus.pymenu import wait
-
-
+import random
+from pygame import mixer
 
 
 level_list, current_level, current_level_no = None, None, None
@@ -103,6 +103,12 @@ class Level():
     level_limit = -1000
     start_pos = (0,0)
     gravity = .35
+    sounds = [mixer.Sound("sounds/8-Bit Universe - Back in Black.ogg"),
+              mixer.Sound("sounds/8-Bit Universe - Game of Throne.ogg"),
+              mixer.Sound("sounds/8-Bit Universe - Radioactive.ogg"),
+              mixer.Sound("sounds/8-Bit Universe - Smells Like Teen Spirit.ogg"),
+              mixer.Sound("sounds/8-Bit Universe - Take on Me.ogg"),
+              mixer.Sound("sounds/8-Bit Universe - Game of Throne.ogg")]
 
 
     def __init__(self, player):
@@ -124,6 +130,9 @@ class Level():
         self.world_shift_x = 0
         self.world_shift_y = 0
         self.score = 0
+
+        self.sound = None
+        self.play_sound()
 
     def update(self):
         self.entity_list.update()
@@ -172,7 +181,6 @@ class Level():
                 self.shift_world(0, -diff)
                 #print(self.player.rect.x)
 
-
         # if self.player.rect.y >= half_SH:
         #     real_pos = self.player.rect.y - self.world_shift_y
         #     if real_pos <= half_SH:
@@ -181,9 +189,14 @@ class Level():
         #         self.shift_world(0, -diff)
         #     elif real_pos >= SH:
         #         self.player.rect.bottom = SH
-
         self.advance_list.update()
 
+    def play_sound(self):
+        self.sound = random.choice(self.sounds)
+        mixer.pre_init(44100, -16, 1, 512)
+        mixer.pre_init()
+        mixer.stop()
+        self.sound.play()
 
     def draw(self, screen):
         screen.fill(self.background_fill)

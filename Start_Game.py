@@ -6,14 +6,18 @@ from levels import *
 from menus.menu import Console, Menu01
 from player import Player
 import stats
-from menus.pymenu import play_menu, menu, screen, wait, lose, func_nick, end_game
+from menus.pymenu import play_menu, menu, screen, wait, lose, func_nick, end_game, music
 import menus.background_menu as background_menu
 
 
 
 
 def main():
+    pygame.mixer.pre_init(44100, -16, 1, 512)
+    pygame.mixer.init()
+
     background_menu.backgl = background_menu.Background_live()
+    music.play()
     func_nick()
 
     # Create all the levels
@@ -50,6 +54,7 @@ def play():
     statistic = stats.statistic
     HUD = stats.Hud(screen, player, statistic)
     statistic.score = 0
+    player.stats = statistic
 
     clock = pygame.time.Clock()
     done = False

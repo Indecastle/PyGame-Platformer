@@ -29,6 +29,7 @@ HELP = ['Press ESC to enable/disable Menu',
         'Press UP/DOWN to move through Menu',
         'Press LEFT/RIGHT to move through Selectors']
 font = pygame.font.SysFont("nevis", 100)
+music = pygame.mixer.Sound("sounds/The Playground Ensemble, David Farrell - 8-Bit a Rose E'er Blooming.ogg")
 
 
 def get_stats():
@@ -285,6 +286,9 @@ def func():
     wait()
     pygame.key.set_repeat()
     play()
+    pygame.mixer.stop()
+    music.play()
+
     # pygame.key.set_repeat(200, 200)
 
 
