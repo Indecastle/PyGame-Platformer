@@ -23,7 +23,7 @@ print(is_connected())
 assert is_connected(), 'No internet'
 
 
-client = MongoClient('mongodb+srv://ezreal:5656265@firstcluster-xduia.mongodb.net/test?retryWrites=true')
+client = MongoClient('mongodb+srv://ezreal:Qwe123@firstcluster.xduia.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 db = client.get_database('platformer')
 users = db.users
 super_users = db.super_users

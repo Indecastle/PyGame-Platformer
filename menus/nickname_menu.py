@@ -1,13 +1,12 @@
-import sys, os, pprint
+import sys, re, pprint
 import pygame as pg
 import constants
 from boxes import TextBox, ButtonBox
 import stats, menus.menu
 from menus.background_menu import backgl
-KEY_REPEAT_SETTING = (200,70)
 
-from sklearn.externals import joblib
-clf = joblib.load('menus/injection_model.pkl')
+KEY_REPEAT_SETTING = (200,70)
+EMAIL_PATTERN = re.compile('\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
 
 class MenuControl(object):
     def __init__(self, screena):
@@ -27,9 +26,7 @@ class MenuControl(object):
         self.color = (100,100,100)
 
     def check_email(self, id, text):
-        input_data = [text]
-        ints = clf.predict(input_data).astype(int)
-        if ints[0] == 1:
+        if EMAIL_PATTERN.search(text):
             self.message("its Email")
         else:
             self.message("its not Email")
